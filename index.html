@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendeme este auto | Concesionaria de Autos</title>
+    <meta name="description" content="Concesionaria de autos usados y 0km. Los mejores vehículos al mejor precio.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- HEADER / ENCABEZADO -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <header class="header">
+        <div class="header-container">
+            <!-- Logo -->
+            <div class="logo">
+                <span class="logo-icon">🚗</span>
+                <div class="logo-text">
+                    <span class="logo-main">VENDEME</span>
+                    <span class="logo-sub">ESTE AUTO</span>
+                </div>
+            </div>
+
+            <!-- Contacto rápido -->
+            <div class="header-contact">
+                <a href="#" id="header-phone" class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <span class="contact-text" id="display-telefono">Cargando...</span>
+                </a>
+                <a href="#" id="header-whatsapp" class="btn-whatsapp">
+                    <span>WhatsApp</span>
+                </a>
+            </div>
+
+            <!-- Menú móvil -->
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- HERO / BANNER PRINCIPAL -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="hero-title-line">ENCONTRÁ TU</span>
+                <span class="hero-title-accent">PRÓXIMO AUTO</span>
+            </h1>
+            <p class="hero-subtitle">Los mejores vehículos seleccionados al mejor precio del mercado</p>
+            <a href="#catalogo" class="btn-hero">Ver Catálogo</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat">
+                <span class="stat-number" id="total-autos">0</span>
+                <span class="stat-label">Autos disponibles</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Documentación al día</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">✓</span>
+                <span class="stat-label">Permuta disponible<br>(Cambia el valor)<br>NO SE TOMAN MOTOS</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- INFORMACIÓN DE CONTACTO -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <section class="info-bar">
+        <div class="info-container">
+            <div class="info-item">
+                <span class="info-icon">📍</span>
+                <div class="info-text">
+                    <span class="info-label">Dirección</span>
+                    <span class="info-value" id="display-direccion">Cargando...</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <span class="info-icon">🕐</span>
+                <div class="info-text">
+                    <span class="info-label">Horario</span>
+                    <span class="info-value" id="display-horario">Cargando...</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <span class="info-icon">✉️</span>
+                <div class="info-text">
+                    <span class="info-label">Email</span>
+                    <span class="info-value" id="display-email">Cargando...</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- CATÁLOGO DE AUTOS -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <main class="catalogo" id="catalogo">
+        <div class="catalogo-container">
+            
+            <!-- Sidebar con filtros -->
+            <aside class="filtros" id="filtros">
+                <div class="filtros-header">
+                    <h2>Filtros</h2>
+                    <button class="btn-limpiar" id="btn-limpiar">Limpiar todo</button>
+                </div>
+
+                <!-- Filtro de búsqueda -->
+                <div class="filtro-grupo">
+                    <label class="filtro-label">Buscar</label>
+                    <input type="text" id="filtro-busqueda" class="filtro-input" placeholder="Ej: Toyota Corolla...">
+                </div>
+
+                <!-- Filtro de precio -->
+                <div class="filtro-grupo">
+                    <label class="filtro-label">Rango de Precio</label>
+                    <select id="filtro-precio" class="filtro-select">
+                        <option value="">Todos los precios</option>
+                        <!-- Se llenan desde JS -->
+                    </select>
+                    <!-- Precio manual -->
+                    <div class="precio-manual" id="precio-manual">
+                        <span class="precio-manual-label">O ingresá un rango:</span>
+                        <div class="precio-manual-inputs">
+                            <input type="number" id="precio-min" class="filtro-input precio-input" placeholder="Mínimo">
+                            <span class="precio-separador">-</span>
+                            <input type="number" id="precio-max" class="filtro-input precio-input" placeholder="Máximo">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtro de marca -->
+                <div class="filtro-grupo">
+                    <label class="filtro-label">Marca</label>
+                    <select id="filtro-marca" class="filtro-select">
+                        <option value="">Todas las marcas</option>
+                        <!-- Se llenan desde JS -->
+                    </select>
+                </div>
+
+                <!-- Filtro de año -->
+                <div class="filtro-grupo">
+                    <label class="filtro-label">Año</label>
+                    <select id="filtro-año" class="filtro-select">
+                        <option value="">Todos los años</option>
+                        <!-- Se llenan desde JS -->
+                    </select>
+                </div>
+
+                <!-- Filtro de carrocería -->
+                <div class="filtro-grupo">
+                    <label class="filtro-label">Carrocería</label>
+                    <select id="filtro-carroceria" class="filtro-select">
+                        <option value="">Todas las carrocerías</option>
+                        <!-- Se llenan desde JS -->
+                    </select>
+                </div>
+
+                <!-- Filtro de combustible -->
+                <div class="filtro-grupo">
+                    <label class="filtro-label">Combustible</label>
+                    <select id="filtro-combustible" class="filtro-select">
+                        <option value="">Todos</option>
+                        <!-- Se llenan desde JS -->
+                    </select>
+                </div>
+
+                <!-- Filtro permuta -->
+                <div class="filtro-grupo">
+                    <label class="filtro-checkbox">
+                        <input type="checkbox" id="filtro-permuta">
+                        <span class="checkmark"></span>
+                        Solo con permuta disponible
+                    </label>
+                </div>
+
+                <!-- Botón filtros móvil -->
+                <button class="btn-aplicar-filtros" id="btn-aplicar-filtros">
+                    Aplicar Filtros
+                </button>
+            </aside>
+
+            <!-- Grid de autos -->
+            <section class="autos-section">
+                <div class="autos-header">
+                    <h2 class="autos-titulo">Nuestros Vehículos</h2>
+                    <div class="autos-controles">
+                        <span class="autos-contador"><span id="contador-resultados">0</span> vehículos</span>
+                        <button class="btn-filtros-movil" id="btn-filtros-movil">
+                            <span>⚙️</span> Filtros
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grid de autos - Se llena desde JavaScript -->
+                <div class="autos-grid" id="autos-grid">
+                    <!-- Los autos se cargan aquí dinámicamente -->
+                </div>
+
+                <!-- Mensaje sin resultados -->
+                <div class="sin-resultados" id="sin-resultados" style="display: none;">
+                    <span class="sin-resultados-icon">🔍</span>
+                    <h3>No se encontraron vehículos</h3>
+                    <p>Intenta modificar los filtros de búsqueda</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- MODAL DE DETALLE DEL AUTO -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="modal" id="modal-auto">
+        <div class="modal-contenido">
+            <button class="modal-cerrar" id="modal-cerrar">&times;</button>
+            <div class="modal-body" id="modal-body">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- FOOTER / PIE DE PÁGINA -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-main">
+                <!-- Logo y descripción -->
+                <div class="footer-brand">
+                    <div class="logo footer-logo">
+                        <span class="logo-icon">🚗</span>
+                        <div class="logo-text">
+                            <span class="logo-main">VENDEME</span>
+                            <span class="logo-sub">ESTE AUTO</span>
+                        </div>
+                    </div>
+                    <p class="footer-descripcion">
+                        Tu concesionaria de confianza. Vehículos seleccionados con la mejor relación precio-calidad del mercado.
+                    </p>
+                </div>
+
+                <!-- Contacto -->
+                <div class="footer-contacto">
+                    <h3>Contacto</h3>
+                    <ul>
+                        <li id="footer-direccion">📍 Cargando...</li>
+                        <li id="footer-telefono">📞 Cargando...</li>
+                        <li id="footer-email">✉️ Cargando...</li>
+                        <li id="footer-horario">🕐 Cargando...</li>
+                    </ul>
+                </div>
+
+                <!-- Redes sociales -->
+                <div class="footer-redes">
+                    <h3>Seguinos</h3>
+                    <div class="redes-icons">
+                        <a href="#" id="link-instagram" class="red-social" target="_blank" rel="noopener">
+                            <span>Instagram</span>
+                        </a>
+                        <a href="#" id="link-facebook" class="red-social" target="_blank" rel="noopener">
+                            <span>Facebook</span>
+                        </a>
+                        <a href="#" id="link-whatsapp-footer" class="red-social whatsapp" target="_blank" rel="noopener">
+                            <span>WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; <span id="año-actual"></span> Vendeme este auto. Todos los derechos reservados.</p>
+                <p class="footer-nota">⚠️ EN PERMUTA CAMBIA EL VALOR - NO TOMO MOTOS</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp flotante -->
+    <a href="#" id="whatsapp-flotante" class="whatsapp-flotante" target="_blank" rel="noopener">
+        <span class="whatsapp-icon">💬</span>
+        <span class="whatsapp-texto">¿Consultas?</span>
+    </a>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
