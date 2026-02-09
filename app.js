@@ -100,11 +100,10 @@ function cargarInformacionContacto() {
 
     document.getElementById('display-direccion').textContent = INFORMACION_CONTACTO.direccion + ', ' + INFORMACION_CONTACTO.ciudad;
     document.getElementById('display-horario').textContent = INFORMACION_CONTACTO.horario;
-    document.getElementById('display-email').textContent = INFORMACION_CONTACTO.email;
+    document.getElementById('display-telefono-info').textContent = INFORMACION_CONTACTO.telefono;
 
     document.getElementById('footer-direccion').innerHTML = '<img src="res/ico/location.svg" alt="" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:6px">' + INFORMACION_CONTACTO.direccion + ', ' + INFORMACION_CONTACTO.ciudad;
     document.getElementById('footer-telefono').innerHTML = '<img src="res/ico/phone.svg" alt="" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:6px">' + INFORMACION_CONTACTO.telefono;
-    document.getElementById('footer-email').innerHTML = '<img src="res/ico/email.svg" alt="" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:6px">' + INFORMACION_CONTACTO.email;
     document.getElementById('footer-horario').innerHTML = '<img src="res/ico/clock.svg" alt="" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:6px">' + INFORMACION_CONTACTO.horario;
 
     if (REDES_SOCIALES.instagram) {
