@@ -8,9 +8,9 @@
 // ============================================================================
 
 const INFORMACION_CONTACTO = {
-    telefono: "+54 11 1234-5678",           // Tu número de teléfono
-    whatsapp: "5491112345678",               // Tu WhatsApp SIN espacios ni guiones
-    direccion: "Av. Libertador 1234",        // Tu dirección
+    telefono: "+54 11 2379-003",             // Tu número de teléfono
+    whatsapp: "54112379003",                  // Tu WhatsApp SIN espacios ni guiones
+    direccion: "Av. Lisandro de la Torre 923 (Liniers)", // Tu dirección
     ciudad: "Buenos Aires, Argentina",       // Tu ciudad
     email: "ventas@vendemesteauto.com",      // Tu email
     horario: "Lun - Sáb: 9:00 - 19:00"      // Tu horario de atención
@@ -24,7 +24,7 @@ const INFORMACION_CONTACTO = {
 const REDES_SOCIALES = {
     instagram: "https://instagram.com/vendemesteauto",
     facebook: "https://facebook.com/vendemesteauto",
-    whatsapp: "https://wa.me/5491112345678"  // Usa tu número de WhatsApp
+    whatsapp: "https://wa.me/54112379003"    // Usa tu número de WhatsApp
 };
 
 
