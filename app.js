@@ -55,6 +55,11 @@ async function cargarInventario() {
 
         LISTA_AUTOS = data.autos;
 
+        // Aplicar configuracion de la pagina si existe
+        if (data.config) {
+            aplicarConfig(data.config);
+        }
+
         document.getElementById('total-autos').textContent = LISTA_AUTOS.length;
         cargarAutos();
 
@@ -134,6 +139,43 @@ function cargarInformacionContacto() {
     document.getElementById('whatsapp-flotante').href = 'https://wa.me/' + INFORMACION_CONTACTO.whatsapp + '?text=Hola!%20Me%20interesa%20un%20vehículo';
     document.getElementById('año-actual').textContent = new Date().getFullYear();
     document.getElementById('total-autos').textContent = '...';
+}
+
+// ============================================================================
+// APLICAR CONFIGURACION DESDE data.json
+// ============================================================================
+
+function aplicarConfig(config) {
+    // Sobreescribir datos de contacto si vienen en config
+    if (config.telefono) INFORMACION_CONTACTO.telefono = config.telefono;
+    if (config.whatsapp) INFORMACION_CONTACTO.whatsapp = config.whatsapp;
+    if (config.direccion) INFORMACION_CONTACTO.direccion = config.direccion;
+    if (config.ciudad) INFORMACION_CONTACTO.ciudad = config.ciudad;
+    if (config.email) INFORMACION_CONTACTO.email = config.email;
+    if (config.horario) INFORMACION_CONTACTO.horario = config.horario;
+
+    // Sobreescribir redes sociales
+    if (config.instagram) REDES_SOCIALES.instagram = config.instagram;
+    if (config.facebook) REDES_SOCIALES.facebook = config.facebook;
+    if (config.whatsapp) REDES_SOCIALES.whatsapp = 'https://wa.me/' + config.whatsapp;
+
+    // Re-aplicar contacto con los datos actualizados
+    cargarInformacionContacto();
+
+    // Titulo del hero
+    const heroLine1 = document.querySelector('.hero-title-line');
+    const heroLine2 = document.querySelector('.hero-title-accent');
+    if (heroLine1 && config.titulo_linea1) heroLine1.textContent = config.titulo_linea1;
+    if (heroLine2 && config.titulo_linea2) heroLine2.textContent = config.titulo_linea2;
+
+    // Logo
+    if (config.logo) {
+        const logos = document.querySelectorAll('.logo-icon img');
+        logos.forEach(img => { img.src = config.logo; });
+        // Actualizar favicon
+        const favicon = document.querySelector('link[rel="icon"]');
+        if (favicon) favicon.href = config.logo;
+    }
 }
 
 // ============================================================================

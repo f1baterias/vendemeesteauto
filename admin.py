@@ -244,12 +244,14 @@ class AplicacionAdmin:
         self.datos = cargar_datos()
         self.auto_seleccionado_id = None
         self.modo_edicion = False
+        self.vista_config = False  # True = mostrando config, False = mostrando vehiculos
         # Lista unificada de fotos: cada elemento es una tupla (tipo, valor)
         # tipo="existente" -> valor es el nombre de archivo en disco
         # tipo="nueva"     -> valor es la ruta absoluta al archivo original
         self.fotos_lista = []
         self.thumbs_cache = {}
         self.lista_thumbs = []
+        self.logo_thumb = None  # Cache para miniatura del logo
 
         # ── Configurar estilos ttk ────────────────────────────────────
         self._configurar_estilos()
@@ -357,6 +359,17 @@ class AplicacionAdmin:
         )
         self.btn_publicar.pack(side="right", pady=12)
         Tooltip(self.btn_publicar, "Sube los cambios al servidor (git push)")
+
+        # Boton configuracion de la pagina
+        self.btn_config = tk.Button(
+            header_inner, text="\u2699  CONFIGURACION",
+            font=("Segoe UI", 9, "bold"), fg=COLOR_TEXTO, bg=COLOR_BG_CARD,
+            activebackground=COLOR_BG_HOVER, activeforeground=COLOR_ORO,
+            relief="flat", padx=14, pady=6, cursor="hand2",
+            command=self.mostrar_configuracion
+        )
+        self.btn_config.pack(side="right", pady=12, padx=(0, 10))
+        Tooltip(self.btn_config, "Editar datos de contacto, titulo y logo de la pagina")
 
         # Linea dorada sutil debajo del header
         tk.Frame(self.root, bg=COLOR_ORO, height=2).pack(fill="x")
@@ -472,6 +485,47 @@ class AplicacionAdmin:
 
         # ── Construir campos del formulario ──────────────────────────
         self._construir_formulario()
+
+        # ══════════════════════════════════════════════════════════════
+        #  PANEL DE CONFIGURACION (oculto por defecto)
+        # ══════════════════════════════════════════════════════════════
+        self.canvas_config = tk.Canvas(panel_derecho, bg=COLOR_BG,
+                                        highlightthickness=0, bd=0)
+        scrollbar_config = ttk.Scrollbar(
+            panel_derecho, orient="vertical", command=self.canvas_config.yview
+        )
+        self.frame_config = tk.Frame(self.canvas_config, bg=COLOR_BG)
+
+        self.frame_config.bind(
+            "<Configure>",
+            lambda e: self.canvas_config.configure(
+                scrollregion=self.canvas_config.bbox("all")
+            )
+        )
+
+        self.canvas_config_window = self.canvas_config.create_window(
+            (0, 0), window=self.frame_config, anchor="nw"
+        )
+        self.canvas_config.configure(yscrollcommand=scrollbar_config.set)
+
+        self.canvas_config.bind(
+            "<Configure>",
+            lambda e: self.canvas_config.itemconfig(self.canvas_config_window, width=e.width)
+        )
+
+        self.scrollbar_config = scrollbar_config
+
+        # Scroll con rueda en config
+        self.canvas_config.bind("<Enter>", lambda e: self.canvas_config.bind_all(
+            "<MouseWheel>", lambda ev: self.canvas_config.yview_scroll(int(-1 * (ev.delta / 120)), "units")
+        ))
+        self.canvas_config.bind("<Leave>", lambda e: self._desvincular_scroll_form())
+
+        # Guardar referencia al scrollbar del formulario
+        self.scrollbar_form = scrollbar_form
+
+        # Construir formulario de configuracion
+        self._construir_formulario_config()
 
         # ══════════════════════════════════════════════════════════════
         #  BARRA DE ESTADO (inferior)
@@ -1671,6 +1725,349 @@ class AplicacionAdmin:
                 f"Ocurrio un error:\n\n{str(e)}"
             )
             self.estado("Error al publicar cambios")
+
+    # ──────────────────────────────────────────────────────────────────
+    #  CONFIGURACION DE LA PAGINA
+    # ──────────────────────────────────────────────────────────────────
+
+    def _construir_formulario_config(self):
+        """Construye el formulario de configuracion de la pagina."""
+        form = self.frame_config
+
+        # Titulo
+        frame_titulo = tk.Frame(form, bg=COLOR_BG)
+        frame_titulo.pack(fill="x", padx=24, pady=(PAD_SECTION, 8))
+
+        btn_volver = tk.Button(
+            frame_titulo, text="\u2190  VOLVER A VEHICULOS",
+            font=("Segoe UI", 9), fg=COLOR_TEXTO_SECUNDARIO,
+            bg=COLOR_BG_CARD, activebackground=COLOR_BG_HOVER,
+            activeforeground=COLOR_TEXTO,
+            relief="flat", padx=12, pady=4, cursor="hand2",
+            command=self.mostrar_vehiculos
+        )
+        btn_volver.pack(side="left")
+
+        tk.Label(
+            frame_titulo, text="Configuracion de la Pagina",
+            font=("Segoe UI", 18, "bold"), fg=COLOR_ORO, bg=COLOR_BG
+        ).pack(side="left", padx=(16, 0))
+
+        # Separador
+        tk.Frame(form, bg=COLOR_BORDE, height=1).pack(fill="x", padx=24, pady=(4, PAD_SECTION))
+
+        # ── Variables de configuracion ────────────────────────────────
+        self.var_cfg_telefono = tk.StringVar()
+        self.var_cfg_whatsapp = tk.StringVar()
+        self.var_cfg_direccion = tk.StringVar()
+        self.var_cfg_ciudad = tk.StringVar()
+        self.var_cfg_email = tk.StringVar()
+        self.var_cfg_horario = tk.StringVar()
+        self.var_cfg_instagram = tk.StringVar()
+        self.var_cfg_facebook = tk.StringVar()
+        self.var_cfg_titulo1 = tk.StringVar()
+        self.var_cfg_titulo2 = tk.StringVar()
+        self.var_cfg_logo = tk.StringVar()
+
+        # ── CARD 1: Contacto ──────────────────────────────────────────
+        interior_contacto, _ = self._crear_card_config(form, "Contacto")
+
+        fila_tel = self._crear_fila_doble_config(interior_contacto)
+        self._crear_campo_en_fila_config(
+            fila_tel, "Telefono", self.var_cfg_telefono, 0,
+            placeholder="Ej: +54 11 2379-0003"
+        )
+        self._crear_campo_en_fila_config(
+            fila_tel, "WhatsApp (sin espacios)", self.var_cfg_whatsapp, 1,
+            placeholder="Ej: 541123790003"
+        )
+
+        fila_email_horario = self._crear_fila_doble_config(interior_contacto)
+        self._crear_campo_en_fila_config(
+            fila_email_horario, "Email", self.var_cfg_email, 0,
+            placeholder="Ej: ventas@miempresa.com"
+        )
+        self._crear_campo_en_fila_config(
+            fila_email_horario, "Horario", self.var_cfg_horario, 1,
+            placeholder="Ej: Lun - Sab: 9:00 - 19:00"
+        )
+
+        # ── CARD 2: Ubicacion ────────────────────────────────────────
+        interior_ubicacion, _ = self._crear_card_config(form, "Ubicacion")
+
+        self._crear_campo_vertical_config(
+            interior_ubicacion, "Direccion", self.var_cfg_direccion,
+            placeholder="Ej: Av. Lisandro de la Torre 923 (Liniers)"
+        )
+
+        self._crear_campo_vertical_config(
+            interior_ubicacion, "Ciudad", self.var_cfg_ciudad,
+            placeholder="Ej: Buenos Aires, Argentina"
+        )
+
+        # ── CARD 3: Redes Sociales ────────────────────────────────────
+        interior_redes, _ = self._crear_card_config(form, "Redes Sociales")
+
+        self._crear_campo_vertical_config(
+            interior_redes, "Instagram (URL completa)", self.var_cfg_instagram,
+            placeholder="Ej: https://instagram.com/tuusuario"
+        )
+
+        self._crear_campo_vertical_config(
+            interior_redes, "Facebook (URL completa)", self.var_cfg_facebook,
+            placeholder="Ej: https://facebook.com/tupagina"
+        )
+
+        # ── CARD 4: Pagina Principal ──────────────────────────────────
+        interior_pagina, _ = self._crear_card_config(form, "Pagina Principal")
+
+        self._crear_campo_vertical_config(
+            interior_pagina, "Titulo - Linea 1", self.var_cfg_titulo1,
+            placeholder="Ej: CONCESIONARIA DE"
+        )
+
+        self._crear_campo_vertical_config(
+            interior_pagina, "Titulo - Linea 2 (acento dorado)", self.var_cfg_titulo2,
+            placeholder="Ej: AUTOS USADOS"
+        )
+
+        # Logo
+        frame_logo_sec = tk.Frame(interior_pagina, bg=COLOR_BG_CARD)
+        frame_logo_sec.pack(fill="x", pady=(8, PAD_FIELD))
+
+        tk.Label(
+            frame_logo_sec, text="Logo",
+            font=("Segoe UI", 10),
+            fg=COLOR_TEXTO_SECUNDARIO, bg=COLOR_BG_CARD
+        ).pack(anchor="w", pady=(0, 3))
+
+        frame_logo_row = tk.Frame(frame_logo_sec, bg=COLOR_BG_CARD)
+        frame_logo_row.pack(fill="x")
+
+        # Preview del logo
+        self.frame_logo_preview = tk.Frame(
+            frame_logo_row, bg=COLOR_BG_INPUT, width=80, height=80,
+            highlightbackground=COLOR_BORDE_INPUT, highlightthickness=1
+        )
+        self.frame_logo_preview.pack(side="left", padx=(0, 12))
+        self.frame_logo_preview.pack_propagate(False)
+
+        self.lbl_logo_preview = tk.Label(
+            self.frame_logo_preview, text="SIN\nLOGO",
+            font=("Segoe UI", 9), fg=COLOR_TEXTO_SECUNDARIO,
+            bg=COLOR_BG_INPUT, justify="center"
+        )
+        self.lbl_logo_preview.pack(expand=True)
+
+        frame_logo_btns = tk.Frame(frame_logo_row, bg=COLOR_BG_CARD)
+        frame_logo_btns.pack(side="left", fill="y")
+
+        btn_sel_logo = tk.Button(
+            frame_logo_btns, text="SELECCIONAR LOGO",
+            font=("Segoe UI", 9, "bold"), fg=COLOR_BG, bg=COLOR_ORO,
+            activebackground=COLOR_ORO_HOVER, activeforeground=COLOR_BG,
+            relief="flat", padx=14, pady=6, cursor="hand2",
+            command=self.seleccionar_logo
+        )
+        btn_sel_logo.pack(anchor="w", pady=(0, 4))
+        Tooltip(btn_sel_logo, "Seleccionar imagen para el logo (SVG, PNG, JPG)")
+
+        self.lbl_logo_ruta = tk.Label(
+            frame_logo_btns, text="Logo actual: ninguno",
+            font=("Segoe UI", 9), fg=COLOR_TEXTO_SECUNDARIO,
+            bg=COLOR_BG_CARD, anchor="w"
+        )
+        self.lbl_logo_ruta.pack(anchor="w")
+
+        # ── Boton guardar configuracion ────────────────────────────────
+        frame_btns_cfg = tk.Frame(form, bg=COLOR_BG)
+        frame_btns_cfg.pack(fill="x", padx=24, pady=(4, PAD_SECTION * 2))
+
+        btn_guardar_cfg = tk.Button(
+            frame_btns_cfg, text="GUARDAR CONFIGURACION",
+            font=("Segoe UI", 12, "bold"), fg="#ffffff", bg=COLOR_VERDE,
+            activebackground=COLOR_VERDE_HOVER, activeforeground="#ffffff",
+            relief="flat", padx=24, pady=10, cursor="hand2",
+            command=self.guardar_config
+        )
+        btn_guardar_cfg.pack(side="left")
+
+    def _crear_card_config(self, parent, titulo_seccion=None):
+        """Crea una card para el formulario de config (reutiliza logica de _crear_card)."""
+        return self._crear_card(parent, titulo_seccion)
+
+    def _crear_fila_doble_config(self, parent):
+        """Crea una fila doble para config."""
+        return self._crear_fila_doble(parent)
+
+    def _crear_campo_vertical_config(self, parent, label_texto, variable, placeholder=""):
+        """Crea un campo vertical para config."""
+        return self._crear_campo_vertical(parent, label_texto, variable, placeholder)
+
+    def _crear_campo_en_fila_config(self, parent, label_texto, variable, columna, placeholder=""):
+        """Crea un campo en fila para config."""
+        return self._crear_campo_en_fila(parent, label_texto, variable, columna, placeholder)
+
+    def mostrar_configuracion(self):
+        """Muestra el panel de configuracion en vez del formulario de vehiculos."""
+        if self.vista_config:
+            return
+
+        self.vista_config = True
+
+        # Ocultar formulario de vehiculos
+        self.canvas_form.pack_forget()
+        self.scrollbar_form.pack_forget()
+
+        # Mostrar formulario de configuracion
+        self.canvas_config.pack(side="left", fill="both", expand=True)
+        self.scrollbar_config.pack(side="right", fill="y")
+
+        # Cargar datos de config
+        self.cargar_config()
+
+        # Actualizar boton
+        self.btn_config.config(
+            text="\u2699  CONFIGURACION", fg=COLOR_ORO, bg=COLOR_BG_INPUT
+        )
+
+        self.estado("Editando configuracion de la pagina")
+
+    def mostrar_vehiculos(self):
+        """Vuelve al panel de vehiculos."""
+        if not self.vista_config:
+            return
+
+        self.vista_config = False
+
+        # Ocultar formulario de config
+        self.canvas_config.pack_forget()
+        self.scrollbar_config.pack_forget()
+
+        # Mostrar formulario de vehiculos
+        self.canvas_form.pack(side="left", fill="both", expand=True)
+        self.scrollbar_form.pack(side="right", fill="y")
+
+        # Restaurar boton
+        self.btn_config.config(
+            text="\u2699  CONFIGURACION", fg=COLOR_TEXTO, bg=COLOR_BG_CARD
+        )
+
+        self.estado("Listo")
+
+    def cargar_config(self):
+        """Carga la configuracion desde data.json al formulario."""
+        config = self.datos.get("config", {})
+
+        self.var_cfg_telefono.set(config.get("telefono", ""))
+        self.var_cfg_whatsapp.set(config.get("whatsapp", ""))
+        self.var_cfg_direccion.set(config.get("direccion", ""))
+        self.var_cfg_ciudad.set(config.get("ciudad", ""))
+        self.var_cfg_email.set(config.get("email", ""))
+        self.var_cfg_horario.set(config.get("horario", ""))
+        self.var_cfg_instagram.set(config.get("instagram", ""))
+        self.var_cfg_facebook.set(config.get("facebook", ""))
+        self.var_cfg_titulo1.set(config.get("titulo_linea1", ""))
+        self.var_cfg_titulo2.set(config.get("titulo_linea2", ""))
+        self.var_cfg_logo.set(config.get("logo", ""))
+
+        # Actualizar preview del logo
+        self._actualizar_logo_preview()
+
+    def guardar_config(self):
+        """Guarda la configuracion en data.json."""
+        config = {
+            "telefono": self.var_cfg_telefono.get().strip(),
+            "whatsapp": self.var_cfg_whatsapp.get().strip(),
+            "direccion": self.var_cfg_direccion.get().strip(),
+            "ciudad": self.var_cfg_ciudad.get().strip(),
+            "email": self.var_cfg_email.get().strip(),
+            "horario": self.var_cfg_horario.get().strip(),
+            "instagram": self.var_cfg_instagram.get().strip(),
+            "facebook": self.var_cfg_facebook.get().strip(),
+            "titulo_linea1": self.var_cfg_titulo1.get().strip(),
+            "titulo_linea2": self.var_cfg_titulo2.get().strip(),
+            "logo": self.var_cfg_logo.get().strip()
+        }
+
+        self.datos["config"] = config
+
+        try:
+            guardar_datos(self.datos)
+            messagebox.showinfo(
+                "Configuracion guardada",
+                "La configuracion de la pagina fue guardada correctamente.\n\n"
+                "Los cambios se veran reflejados en la web al publicar."
+            )
+            self.estado("Configuracion guardada")
+        except IOError as e:
+            messagebox.showerror(
+                "Error al guardar",
+                f"No se pudo guardar la configuracion:\n{e}"
+            )
+
+    def seleccionar_logo(self):
+        """Abre dialogo para seleccionar un logo."""
+        archivo = filedialog.askopenfilename(
+            title="Seleccionar logo",
+            filetypes=[
+                ("Imagenes", "*.svg *.png *.jpg *.jpeg *.webp"),
+                ("SVG", "*.svg"),
+                ("PNG", "*.png"),
+                ("JPEG", "*.jpg *.jpeg"),
+                ("Todos", "*.*")
+            ]
+        )
+        if not archivo:
+            return
+
+        # Copiar el logo a res/ico/
+        ico_dir = os.path.join(BASE_DIR, "res", "ico")
+        os.makedirs(ico_dir, exist_ok=True)
+
+        nombre_archivo = os.path.basename(archivo)
+        extension = os.path.splitext(nombre_archivo)[1].lower()
+        nombre_destino = f"logo{extension}"
+        ruta_destino = os.path.join(ico_dir, nombre_destino)
+
+        try:
+            shutil.copy2(archivo, ruta_destino)
+            self.var_cfg_logo.set(f"res/ico/{nombre_destino}")
+            self._actualizar_logo_preview()
+            self.estado(f"Logo seleccionado: {nombre_archivo}")
+        except IOError as e:
+            messagebox.showerror(
+                "Error al copiar logo",
+                f"No se pudo copiar el archivo:\n{e}"
+            )
+
+    def _actualizar_logo_preview(self):
+        """Actualiza la miniatura del logo en el formulario."""
+        logo_ruta = self.var_cfg_logo.get()
+        self.lbl_logo_ruta.config(text=f"Logo actual: {logo_ruta or 'ninguno'}")
+
+        if not logo_ruta:
+            self.lbl_logo_preview.config(image="", text="SIN\nLOGO")
+            self.logo_thumb = None
+            return
+
+        ruta_completa = os.path.join(BASE_DIR, logo_ruta)
+        if not os.path.exists(ruta_completa):
+            self.lbl_logo_preview.config(image="", text="NO\nENCONTRADO")
+            self.logo_thumb = None
+            return
+
+        # Solo mostrar preview para formatos soportados por Pillow (no SVG)
+        if PILLOW_DISPONIBLE and not ruta_completa.lower().endswith(".svg"):
+            thumb = crear_miniatura(ruta_completa, (70, 70))
+            if thumb:
+                self.logo_thumb = thumb
+                self.lbl_logo_preview.config(image=thumb, text="")
+                return
+
+        # Para SVG o si no hay Pillow, mostrar solo el nombre
+        self.lbl_logo_preview.config(image="", text=os.path.basename(logo_ruta))
+        self.logo_thumb = None
 
     # ──────────────────────────────────────────────────────────────────
     #  BARRA DE ESTADO
