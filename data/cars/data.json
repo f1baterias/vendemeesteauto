@@ -11,9 +11,29 @@
     "titulo_linea1": "NUEVO",
     "titulo_linea2": "TITULO",
     "logo": "res/ico/logo.jpg",
-    "marcas": ["Toyota","Volkswagen","Ford","Chevrolet","Fiat","Peugeot","Renault","Honda","Nissan","Jeep","Citro\u00ebn","Hyundai","Kia","Mercedes-Benz","BMW","Audi"],
+    "marcas": [
+      "Toyota",
+      "Volkswagen",
+      "Ford",
+      "Chevrolet",
+      "Fiat",
+      "Peugeot",
+      "Renault",
+      "Honda",
+      "Nissan",
+      "Jeep",
+      "Citroën",
+      "Hyundai",
+      "Kia",
+      "Mercedes-Benz",
+      "BMW",
+      "Audi"
+    ],
     "destacados_activos": true,
-    "destacados_ids": ["ecosport_2010","ford_f100_1992"]
+    "destacados_ids": [
+      "ecosport_2010",
+      "ford_f100_1992"
+    ]
   },
   "autos": [
     {
@@ -76,8 +96,8 @@
     },
     {
       "id": "peugeot_207_2009",
-      "titulo": "Peugeot 207 Compact XS 1.4",
-      "precio": 3500,
+      "titulo": "Peugeot 207 Compact XS 1.4 L",
+      "precio": 3600,
       "marca": "Peugeot",
       "modelo": "207",
       "año": 2009,
@@ -89,8 +109,8 @@
       "documentacion": "08 al día",
       "permuta": true,
       "destacado": false,
-      "oferta": false,
-      "precio_oferta": 0,
+      "oferta": true,
+      "precio_oferta": 2000,
       "imagenes": [
         "bf23b866-2658-45fa-9c2c-a6d5f984cc4d.jpg",
         "62a37319-702d-4e7e-9686-2f3e1a9505be.jpg",
