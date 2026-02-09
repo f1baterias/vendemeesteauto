@@ -33,8 +33,15 @@ except ImportError:
 #  CONFIGURACION
 # ══════════════════════════════════════════════════════════════════════════
 
-# Directorio base = donde esta este script
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Directorio base = donde esta el .exe (o el script si se ejecuta con python)
+# PyInstaller --onefile extrae a carpeta temporal, pero el .exe real esta en sys.executable
+import sys
+if getattr(sys, 'frozen', False):
+    # Ejecutando como .exe empaquetado por PyInstaller
+    BASE_DIR = os.path.dirname(os.path.abspath(sys.executable))
+else:
+    # Ejecutando como script Python normal
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_JSON_PATH = os.path.join(BASE_DIR, "data", "cars", "data.json")
 IMG_BASE_DIR = os.path.join(BASE_DIR, "res", "cars", "img")
 
