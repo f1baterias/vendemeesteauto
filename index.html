@@ -1,16 +1,51 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-AR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vendeme este auto | Concesionaria de Autos</title>
-    <meta name="description" content="Concesionaria de autos usados y 0km. Los mejores vehículos al mejor precio.">
-    
+    <title>Vendeme Este Auto | Concesionaria de Autos Usados en Buenos Aires</title>
+    <meta name="description" content="Concesionaria de autos usados en Buenos Aires. Vehículos seleccionados con financiación y permuta. Ford, Chevrolet, Peugeot, Citroën y más al mejor precio.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://f1baterias.github.io/vendemeesteauto/">
+
+    <!-- Open Graph (WhatsApp, Facebook, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Vendeme Este Auto | Concesionaria de Autos Usados">
+    <meta property="og:description" content="Los mejores vehículos usados seleccionados al mejor precio. Financiación y permuta disponible.">
+    <meta property="og:url" content="https://f1baterias.github.io/vendemeesteauto/">
+    <meta property="og:image" content="https://f1baterias.github.io/vendemeesteauto/res/ico/logo.svg">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:site_name" content="Vendeme Este Auto">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Vendeme Este Auto | Concesionaria de Autos Usados">
+    <meta name="twitter:description" content="Los mejores vehículos usados seleccionados al mejor precio. Financiación y permuta disponible.">
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "AutoDealer",
+        "name": "Vendeme Este Auto",
+        "description": "Concesionaria de autos usados en Buenos Aires. Vehículos seleccionados con financiación y permuta.",
+        "url": "https://f1baterias.github.io/vendemeesteauto/",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Av. Libertador 1234",
+            "addressLocality": "Buenos Aires",
+            "addressCountry": "AR"
+        },
+        "openingHours": "Mo-Sa 09:00-19:00",
+        "priceRange": "$$"
+    }
+    </script>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="res/ico/logo.svg">
 
@@ -22,48 +57,56 @@
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
     <!-- HEADER / ENCABEZADO -->
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
-    <header class="header">
+    <header class="header" role="banner">
         <div class="header-container">
             <!-- Logo -->
-            <div class="logo">
-                <span class="logo-icon"><img src="res/ico/logo.svg" alt="Logo"></span>
+            <a href="#" class="logo" aria-label="Vendeme Este Auto - Inicio">
+                <span class="logo-icon"><img src="res/ico/logo.svg" alt="Vendeme Este Auto - Concesionaria"></span>
                 <div class="logo-text">
                     <span class="logo-main">VENDEME</span>
                     <span class="logo-sub">ESTE AUTO</span>
                 </div>
-            </div>
+            </a>
 
             <!-- Contacto rápido -->
             <div class="header-contact">
-                <a href="#" id="header-phone" class="contact-item">
-                    <span class="contact-icon"><img src="res/ico/phone.svg" alt="Teléfono"></span>
+                <a href="#" id="header-phone" class="contact-item" aria-label="Llamar por teléfono">
+                    <span class="contact-icon"><img src="res/ico/phone.svg" alt=""></span>
                     <span class="contact-text" id="display-telefono">Cargando...</span>
                 </a>
-                <a href="#" id="header-whatsapp" class="btn-whatsapp">
+                <a href="#" id="header-whatsapp" class="btn-whatsapp" aria-label="Contactar por WhatsApp">
                     <span>WhatsApp</span>
                 </a>
             </div>
 
             <!-- Menú móvil -->
-            <button class="mobile-menu-btn" id="mobile-menu-btn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <div class="header-mobile-actions">
+                <a href="#" id="header-whatsapp-mobile" class="btn-whatsapp-mobile" aria-label="WhatsApp">
+                    <img src="res/ico/whatsapp.svg" alt="" style="width:20px;height:20px">
+                </a>
+                <a href="#" id="header-phone-mobile" class="btn-phone-mobile" aria-label="Llamar">
+                    <img src="res/ico/phone.svg" alt="" style="width:18px;height:18px">
+                </a>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir filtros" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
     </header>
 
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
     <!-- HERO / BANNER PRINCIPAL -->
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
-    <section class="hero">
+    <section class="hero" aria-label="Banner principal">
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1 class="hero-title">
-                <span class="hero-title-line">ENCONTRÁ TU</span>
-                <span class="hero-title-accent">PRÓXIMO AUTO</span>
+                <span class="hero-title-line">CONCESIONARIA DE</span>
+                <span class="hero-title-accent">AUTOS USADOS</span>
             </h1>
-            <p class="hero-subtitle">Los mejores vehículos seleccionados al mejor precio del mercado</p>
+            <p class="hero-subtitle">Vehículos seleccionados con la mejor relación precio-calidad del mercado</p>
             <a href="#catalogo" class="btn-hero">Ver Catálogo</a>
         </div>
         <div class="hero-stats">
@@ -76,33 +119,36 @@
                 <span class="stat-label">Documentación al día</span>
             </div>
             <div class="stat">
-                <span class="stat-number">✓</span>
+                <span class="stat-number">&#10003;</span>
                 <span class="stat-label">Financiación y permuta<br>disponible</span>
             </div>
+        </div>
+        <div class="hero-scroll-hint" aria-hidden="true">
+            <span class="scroll-arrow"></span>
         </div>
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
     <!-- INFORMACIÓN DE CONTACTO -->
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
-    <section class="info-bar">
+    <section class="info-bar" aria-label="Información de contacto">
         <div class="info-container">
             <div class="info-item">
-                <span class="info-icon"><img src="res/ico/location.svg" alt="Ubicación"></span>
+                <span class="info-icon"><img src="res/ico/location.svg" alt=""></span>
                 <div class="info-text">
                     <span class="info-label">Dirección</span>
                     <span class="info-value" id="display-direccion">Cargando...</span>
                 </div>
             </div>
             <div class="info-item">
-                <span class="info-icon"><img src="res/ico/clock.svg" alt="Horario"></span>
+                <span class="info-icon"><img src="res/ico/clock.svg" alt=""></span>
                 <div class="info-text">
                     <span class="info-label">Horario</span>
                     <span class="info-value" id="display-horario">Cargando...</span>
                 </div>
             </div>
             <div class="info-item">
-                <span class="info-icon"><img src="res/ico/phone.svg" alt="Teléfono"></span>
+                <span class="info-icon"><img src="res/ico/phone.svg" alt=""></span>
                 <div class="info-text">
                     <span class="info-label">Teléfono</span>
                     <span class="info-value" id="display-telefono-info">Cargando...</span>
@@ -116,24 +162,24 @@
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
     <main class="catalogo" id="catalogo">
         <div class="catalogo-container">
-            
+
             <!-- Sidebar con filtros -->
-            <aside class="filtros" id="filtros">
-                <button class="filtros-cerrar" id="btn-cerrar-filtros">&times;</button>
+            <aside class="filtros" id="filtros" role="region" aria-label="Filtros de búsqueda">
+                <button class="filtros-cerrar" id="btn-cerrar-filtros" aria-label="Cerrar filtros">&times;</button>
                 <div class="filtros-header">
-                    <h2>Filtros</h2>
+                    <span class="filtros-titulo">Filtros</span>
                     <button class="btn-limpiar" id="btn-limpiar">Limpiar todo</button>
                 </div>
 
                 <!-- Filtro de búsqueda -->
                 <div class="filtro-grupo">
-                    <label class="filtro-label">Buscar</label>
+                    <label class="filtro-label" for="filtro-busqueda">Buscar</label>
                     <input type="text" id="filtro-busqueda" class="filtro-input" placeholder="Ej: Toyota Corolla...">
                 </div>
 
                 <!-- Filtro de precio -->
                 <div class="filtro-grupo">
-                    <label class="filtro-label">Rango de Precio</label>
+                    <label class="filtro-label" for="filtro-precio">Rango de Precio</label>
                     <select id="filtro-precio" class="filtro-select">
                         <option value="">Todos los precios</option>
                         <!-- Se llenan desde JS -->
@@ -142,16 +188,16 @@
                     <div class="precio-manual" id="precio-manual">
                         <span class="precio-manual-label">O ingresá un rango:</span>
                         <div class="precio-manual-inputs">
-                            <input type="number" id="precio-min" class="filtro-input precio-input" placeholder="Mínimo">
+                            <input type="number" id="precio-min" class="filtro-input precio-input" placeholder="Mínimo" aria-label="Precio mínimo">
                             <span class="precio-separador">-</span>
-                            <input type="number" id="precio-max" class="filtro-input precio-input" placeholder="Máximo">
+                            <input type="number" id="precio-max" class="filtro-input precio-input" placeholder="Máximo" aria-label="Precio máximo">
                         </div>
                     </div>
                 </div>
 
                 <!-- Filtro de marca -->
                 <div class="filtro-grupo">
-                    <label class="filtro-label">Marca</label>
+                    <label class="filtro-label" for="filtro-marca">Marca</label>
                     <select id="filtro-marca" class="filtro-select">
                         <option value="">Todas las marcas</option>
                         <!-- Se llenan desde JS -->
@@ -160,7 +206,7 @@
 
                 <!-- Filtro de año -->
                 <div class="filtro-grupo">
-                    <label class="filtro-label">Año</label>
+                    <label class="filtro-label" for="filtro-año">Año</label>
                     <select id="filtro-año" class="filtro-select">
                         <option value="">Todos los años</option>
                         <!-- Se llenan desde JS -->
@@ -169,7 +215,7 @@
 
                 <!-- Filtro de carrocería -->
                 <div class="filtro-grupo">
-                    <label class="filtro-label">Carrocería</label>
+                    <label class="filtro-label" for="filtro-carroceria">Carrocería</label>
                     <select id="filtro-carroceria" class="filtro-select">
                         <option value="">Todas las carrocerías</option>
                         <!-- Se llenan desde JS -->
@@ -178,7 +224,7 @@
 
                 <!-- Filtro de combustible -->
                 <div class="filtro-grupo">
-                    <label class="filtro-label">Combustible</label>
+                    <label class="filtro-label" for="filtro-combustible">Combustible</label>
                     <select id="filtro-combustible" class="filtro-select">
                         <option value="">Todos</option>
                         <!-- Se llenan desde JS -->
@@ -189,13 +235,13 @@
                 <div class="filtro-grupo cotizacion-grupo">
                     <label class="filtro-label">Precio en Pesos</label>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="toggle-pesos">
+                        <input type="checkbox" id="toggle-pesos" aria-label="Mostrar precios en pesos argentinos">
                         <span class="toggle-slider"></span>
                         <span class="toggle-text">Mostrar en ARS</span>
                     </label>
                     <div class="cotizacion-inputs">
                         <span class="cotizacion-prefijo">1 USD =</span>
-                        <input type="number" id="cotizacion-dolar" class="filtro-input cotizacion-input" placeholder="Ej: 1200" disabled>
+                        <input type="number" id="cotizacion-dolar" class="filtro-input cotizacion-input" placeholder="Ej: 1200" disabled aria-label="Cotización del dólar">
                         <span class="cotizacion-sufijo">ARS</span>
                     </div>
                     <span class="cotizacion-activa" id="cotizacion-activa" style="display:none;"></span>
@@ -208,40 +254,50 @@
             </aside>
 
             <!-- Grid de autos -->
-            <section class="autos-section">
+            <section class="autos-section" aria-label="Listado de vehículos">
                 <div class="autos-header">
                     <h2 class="autos-titulo">Nuestros Vehículos</h2>
                     <div class="autos-controles">
                         <span class="autos-contador"><span id="contador-resultados">0</span> vehículos</span>
-                        <button class="btn-filtros-movil" id="btn-filtros-movil">
-                            <img src="res/ico/settings.svg" alt="Filtros" style="width:16px;height:16px"> Filtros
+                        <select id="ordenar-por" class="filtro-select ordenar-select" aria-label="Ordenar vehículos">
+                            <option value="destacados">Destacados primero</option>
+                            <option value="precio-asc">Menor precio</option>
+                            <option value="precio-desc">Mayor precio</option>
+                            <option value="año-desc">Más nuevos</option>
+                            <option value="año-asc">Más antiguos</option>
+                        </select>
+                        <button class="btn-filtros-movil" id="btn-filtros-movil" aria-label="Abrir filtros">
+                            <img src="res/ico/settings.svg" alt="" style="width:16px;height:16px"> Filtros
                         </button>
                     </div>
                 </div>
 
+                <!-- Filtros activos (chips) -->
+                <div class="filtros-activos" id="filtros-activos" style="display:none;" aria-label="Filtros aplicados"></div>
+
                 <!-- Barra de cotización mobile (visible solo en mobile, fuera de filtros) -->
                 <div class="cotizacion-movil" id="cotizacion-movil">
                     <label class="toggle-switch toggle-switch-movil">
-                        <input type="checkbox" id="toggle-pesos-movil">
+                        <input type="checkbox" id="toggle-pesos-movil" aria-label="Mostrar precios en pesos">
                         <span class="toggle-slider"></span>
                         <span class="toggle-text">ARS</span>
                     </label>
                     <div class="cotizacion-movil-input">
                         <span class="cotizacion-prefijo">1 USD =</span>
-                        <input type="number" id="cotizacion-dolar-movil" class="filtro-input cotizacion-input" placeholder="..." disabled>
+                        <input type="number" id="cotizacion-dolar-movil" class="filtro-input cotizacion-input" placeholder="..." disabled aria-label="Cotización dólar mobile">
                         <span class="cotizacion-sufijo">ARS</span>
                     </div>
                     <span class="cotizacion-activa-movil" id="cotizacion-activa-movil" style="display:none;"></span>
                 </div>
 
                 <!-- Grid de autos - Se llena desde JavaScript -->
-                <div class="autos-grid" id="autos-grid">
+                <div class="autos-grid" id="autos-grid" role="list">
                     <!-- Los autos se cargan aquí dinámicamente -->
                 </div>
 
                 <!-- Mensaje sin resultados -->
                 <div class="sin-resultados" id="sin-resultados" style="display: none;">
-                    <span class="sin-resultados-icon"><img src="res/ico/search.svg" alt="Buscar"></span>
+                    <span class="sin-resultados-icon"><img src="res/ico/search.svg" alt=""></span>
                     <h3>No se encontraron vehículos</h3>
                     <p>Intenta modificar los filtros de búsqueda</p>
                 </div>
@@ -252,9 +308,9 @@
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
     <!-- MODAL DE DETALLE DEL AUTO -->
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
-    <div class="modal" id="modal-auto">
+    <div class="modal" id="modal-auto" role="dialog" aria-modal="true" aria-label="Detalle del vehículo">
         <div class="modal-contenido">
-            <button class="modal-cerrar" id="modal-cerrar">&times;</button>
+            <button class="modal-cerrar" id="modal-cerrar" aria-label="Cerrar detalle">&times;</button>
             <div class="modal-body" id="modal-body">
                 <!-- Se llena dinámicamente -->
             </div>
@@ -264,30 +320,30 @@
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
     <!-- VISOR DE FOTOS FULLSCREEN (MOBILE) -->
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
-    <div class="visor-fullscreen" id="visor-fullscreen">
+    <div class="visor-fullscreen" id="visor-fullscreen" role="dialog" aria-modal="true" aria-label="Visor de fotos">
         <div class="visor-header">
             <span class="visor-contador" id="visor-contador">1 / 1</span>
-            <button class="visor-cerrar" id="visor-cerrar">&times;</button>
+            <button class="visor-cerrar" id="visor-cerrar" aria-label="Cerrar visor">&times;</button>
         </div>
         <div class="visor-imagen-container" id="visor-imagen-container">
             <img src="" alt="" id="visor-imagen" draggable="false">
         </div>
         <div class="visor-nav">
-            <button class="visor-btn visor-prev" id="visor-prev">❮</button>
-            <button class="visor-btn visor-next" id="visor-next">❯</button>
+            <button class="visor-btn visor-prev" id="visor-prev" aria-label="Foto anterior">&#10094;</button>
+            <button class="visor-btn visor-next" id="visor-next" aria-label="Foto siguiente">&#10095;</button>
         </div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
     <!-- FOOTER / PIE DE PÁGINA -->
     <!-- ═══════════════════════════════════════════════════════════════════════ -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="footer-container">
             <div class="footer-main">
                 <!-- Logo y descripción -->
                 <div class="footer-brand">
                     <div class="logo footer-logo">
-                        <span class="logo-icon"><img src="res/ico/logo.svg" alt="Logo"></span>
+                        <span class="logo-icon"><img src="res/ico/logo.svg" alt="Vendeme Este Auto"></span>
                         <div class="logo-text">
                             <span class="logo-main">VENDEME</span>
                             <span class="logo-sub">ESTE AUTO</span>
@@ -312,16 +368,16 @@
                 <div class="footer-redes">
                     <h3>Seguinos</h3>
                     <div class="redes-icons">
-                        <a href="#" id="link-instagram" class="red-social" target="_blank" rel="noopener">
-                            <img src="res/ico/instagram.svg" alt="Instagram" style="width:18px;height:18px">
+                        <a href="#" id="link-instagram" class="red-social" target="_blank" rel="noopener noreferrer">
+                            <img src="res/ico/instagram.svg" alt="" style="width:18px;height:18px">
                             <span>Instagram</span>
                         </a>
-                        <a href="#" id="link-facebook" class="red-social" target="_blank" rel="noopener">
-                            <img src="res/ico/facebook.svg" alt="Facebook" style="width:18px;height:18px">
+                        <a href="#" id="link-facebook" class="red-social" target="_blank" rel="noopener noreferrer">
+                            <img src="res/ico/facebook.svg" alt="" style="width:18px;height:18px">
                             <span>Facebook</span>
                         </a>
-                        <a href="#" id="link-whatsapp-footer" class="red-social whatsapp" target="_blank" rel="noopener">
-                            <img src="res/ico/whatsapp.svg" alt="WhatsApp" style="width:18px;height:18px">
+                        <a href="#" id="link-whatsapp-footer" class="red-social whatsapp" target="_blank" rel="noopener noreferrer">
+                            <img src="res/ico/whatsapp.svg" alt="" style="width:18px;height:18px">
                             <span>WhatsApp</span>
                         </a>
                     </div>
@@ -329,14 +385,14 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; <span id="año-actual"></span> Vendeme este auto. Todos los derechos reservados.</p>
+                <p>&copy; <span id="año-actual"></span> Vendeme Este Auto. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 
     <!-- WhatsApp flotante -->
-    <a href="#" id="whatsapp-flotante" class="whatsapp-flotante" target="_blank" rel="noopener">
-        <span class="whatsapp-icon"><img src="res/ico/whatsapp.svg" alt="WhatsApp"></span>
+    <a href="#" id="whatsapp-flotante" class="whatsapp-flotante" target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp">
+        <span class="whatsapp-icon"><img src="res/ico/whatsapp.svg" alt=""></span>
         <span class="whatsapp-texto">¿Consultas?</span>
     </a>
 

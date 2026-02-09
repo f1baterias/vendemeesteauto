@@ -94,9 +94,18 @@ function obtenerTodasLasImagenes(auto) {
 // ============================================================================
 
 function cargarInformacionContacto() {
+    const telLimpio = INFORMACION_CONTACTO.telefono.replace(/\s/g, '');
+    const waUrl = 'https://wa.me/' + INFORMACION_CONTACTO.whatsapp;
+
     document.getElementById('display-telefono').textContent = INFORMACION_CONTACTO.telefono;
-    document.getElementById('header-phone').href = 'tel:' + INFORMACION_CONTACTO.telefono.replace(/\s/g, '');
-    document.getElementById('header-whatsapp').href = 'https://wa.me/' + INFORMACION_CONTACTO.whatsapp;
+    document.getElementById('header-phone').href = 'tel:' + telLimpio;
+    document.getElementById('header-whatsapp').href = waUrl;
+
+    // Mobile header buttons
+    const waMobile = document.getElementById('header-whatsapp-mobile');
+    if (waMobile) waMobile.href = waUrl + '?text=' + encodeURIComponent('Hola! Me interesa un vehiculo');
+    const phoneMobile = document.getElementById('header-phone-mobile');
+    if (phoneMobile) phoneMobile.href = 'tel:' + telLimpio;
 
     document.getElementById('display-direccion').textContent = INFORMACION_CONTACTO.direccion + ', ' + INFORMACION_CONTACTO.ciudad;
     document.getElementById('display-horario').textContent = INFORMACION_CONTACTO.horario;
@@ -231,16 +240,28 @@ function mostrarAutos(autos) {
 
     sinResultados.style.display = 'none';
 
+    // Ordenar segun selector
+    const orden = document.getElementById('ordenar-por').value;
     const autosOrdenados = [...autos].sort((a, b) => {
-        if (a.destacado && !b.destacado) return -1;
-        if (!a.destacado && b.destacado) return 1;
-        return 0;
+        switch (orden) {
+            case 'precio-asc': return a.precio - b.precio;
+            case 'precio-desc': return b.precio - a.precio;
+            case 'año-desc': return (b.año || 0) - (a.año || 0);
+            case 'año-asc': return (a.año || 0) - (b.año || 0);
+            default: // destacados
+                if (a.destacado && !b.destacado) return -1;
+                if (!a.destacado && b.destacado) return 1;
+                return 0;
+        }
     });
 
     autosOrdenados.forEach((auto, index) => {
         const card = crearCardAuto(auto, index);
         grid.appendChild(card);
     });
+
+    // Actualizar filtros activos (chips)
+    actualizarFiltrosActivos();
 }
 
 function crearCardAuto(auto, index) {
@@ -268,6 +289,10 @@ function crearCardAuto(auto, index) {
         precioSecundarioHTML = '';
     }
 
+    const mensajeWA = encodeURIComponent(
+        `Hola! Me interesa el ${auto.titulo} (${auto.año}) publicado a ${formatearPrecio(auto.precio)}. ¿Está disponible?`
+    );
+
     card.innerHTML = `
         <div class="auto-imagen-container">
             ${imagenHTML}
@@ -287,10 +312,27 @@ function crearCardAuto(auto, index) {
                     ${precioSecundarioHTML}
                 </div>
             </div>
+            <div class="auto-card-acciones">
+                <a href="https://wa.me/${INFORMACION_CONTACTO.whatsapp}?text=${mensajeWA}"
+                   class="btn-card-whatsapp" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+                    <img src="res/ico/whatsapp.svg" alt="" style="width:16px;height:16px"> Consultar
+                </a>
+                <button class="btn-card-ver" onclick="event.stopPropagation()">Ver detalles</button>
+            </div>
         </div>
     `;
 
+    // Click en card o boton "Ver detalles" abre modal
     card.addEventListener('click', () => abrirModal(auto));
+    card.setAttribute('role', 'listitem');
+    card.setAttribute('tabindex', '0');
+    card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirModal(auto); }
+    });
+    // Boton ver detalles
+    const btnVer = card.querySelector('.btn-card-ver');
+    if (btnVer) btnVer.addEventListener('click', (e) => { e.stopPropagation(); abrirModal(auto); });
+
     return card;
 }
 
@@ -410,8 +452,6 @@ function abrirModal(auto) {
                     <span class="modal-spec-value">${auto.documentacion}</span>
                 </div>
             </div>
-
-            <p class="modal-aviso"><img src="res/ico/warning.svg" alt="" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:4px"> EN PERMUTA CAMBIA EL VALOR · NO SE TOMAN MOTOS</p>
 
             <div class="modal-precio-bloque">
                 ${modalPrecioPrincipal}
@@ -889,6 +929,9 @@ function inicializarEventos() {
 
     document.getElementById('btn-limpiar').addEventListener('click', limpiarFiltros);
 
+    // Ordenar
+    document.getElementById('ordenar-por').addEventListener('change', cargarAutos);
+
     // Toggle pesos y cotización - Desktop
     document.getElementById('toggle-pesos').addEventListener('change', () => sincronizarCotizacion('desktop'));
     document.getElementById('cotizacion-dolar').addEventListener('input', () => actualizarCotizacionDesdeInput('desktop'));
@@ -954,6 +997,7 @@ function inicializarEventos() {
         } else {
             abrirFiltros();
         }
+        menuBtn.setAttribute('aria-expanded', filtrosPanel.classList.contains('activo'));
     });
 
     document.getElementById('btn-filtros-movil').addEventListener('click', () => {
@@ -980,4 +1024,58 @@ function limpiarFiltros() {
     document.getElementById('filtro-combustible').value = '';
 
     cargarAutos();
+}
+
+// ============================================================================
+// FILTROS ACTIVOS (CHIPS)
+// ============================================================================
+
+function actualizarFiltrosActivos() {
+    const contenedor = document.getElementById('filtros-activos');
+    if (!contenedor) return;
+    contenedor.innerHTML = '';
+
+    const filtros = [];
+
+    const busqueda = document.getElementById('filtro-busqueda').value;
+    if (busqueda) filtros.push({ label: `"${busqueda}"`, clear: () => { document.getElementById('filtro-busqueda').value = ''; } });
+
+    const marca = document.getElementById('filtro-marca').value;
+    if (marca) filtros.push({ label: marca, clear: () => { document.getElementById('filtro-marca').value = ''; } });
+
+    const año = document.getElementById('filtro-año').value;
+    if (año) filtros.push({ label: año, clear: () => { document.getElementById('filtro-año').value = ''; } });
+
+    const carroceria = document.getElementById('filtro-carroceria').value;
+    if (carroceria) filtros.push({ label: carroceria, clear: () => { document.getElementById('filtro-carroceria').value = ''; } });
+
+    const combustible = document.getElementById('filtro-combustible').value;
+    if (combustible) filtros.push({ label: combustible, clear: () => { document.getElementById('filtro-combustible').value = ''; } });
+
+    const precioIdx = document.getElementById('filtro-precio').value;
+    if (precioIdx !== '') filtros.push({ label: RANGOS_PRECIO[precioIdx].etiqueta, clear: () => { document.getElementById('filtro-precio').value = ''; } });
+
+    const pMin = document.getElementById('precio-min').value;
+    const pMax = document.getElementById('precio-max').value;
+    if (pMin || pMax) {
+        const label = `U$S ${pMin || '0'} - ${pMax || '...'}`;
+        filtros.push({ label, clear: () => { document.getElementById('precio-min').value = ''; document.getElementById('precio-max').value = ''; } });
+    }
+
+    if (filtros.length === 0) {
+        contenedor.style.display = 'none';
+        return;
+    }
+
+    contenedor.style.display = 'flex';
+    filtros.forEach(f => {
+        const chip = document.createElement('span');
+        chip.className = 'filtro-chip';
+        chip.innerHTML = `${f.label} <button class="filtro-chip-cerrar" aria-label="Quitar filtro ${f.label}">&times;</button>`;
+        chip.querySelector('.filtro-chip-cerrar').addEventListener('click', () => {
+            f.clear();
+            cargarAutos();
+        });
+        contenedor.appendChild(chip);
+    });
 }

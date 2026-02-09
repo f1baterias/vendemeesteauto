@@ -804,16 +804,8 @@ class AplicacionAdmin:
         frame_checks = tk.Frame(interior_opciones, bg=COLOR_BG_CARD)
         frame_checks.pack(fill="x", pady=(0, 4))
 
+        # Permuta siempre activada (valor estatico, no se muestra en la UI)
         self.var_permuta = tk.BooleanVar(value=True)
-        chk_permuta = tk.Checkbutton(
-            frame_checks, text="  Acepta permuta",
-            variable=self.var_permuta, font=("Segoe UI", 11),
-            bg=COLOR_BG_CARD, fg=COLOR_TEXTO, selectcolor=COLOR_BG_INPUT,
-            activebackground=COLOR_BG_CARD, activeforeground=COLOR_ORO,
-            cursor="hand2"
-        )
-        chk_permuta.pack(anchor="w", pady=3)
-        Tooltip(chk_permuta, "Indicar si se acepta otro vehiculo como parte de pago")
 
         self.var_destacado = tk.BooleanVar(value=False)
         chk_destacado = tk.Checkbutton(
