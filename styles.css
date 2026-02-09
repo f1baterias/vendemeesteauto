@@ -2430,7 +2430,7 @@ input:focus-visible,
 .destacado-card .destacado-precio-oferta {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 2.2rem;
-    color: #e53935;
+    color: #00e5ff;
     line-height: 1;
 }
 
@@ -2492,8 +2492,8 @@ input:focus-visible,
     position: absolute;
     top: 1rem;
     left: 1rem;
-    background: #e53935;
-    color: #fff;
+    background: #00e5ff;
+    color: #0a0a0a;
     padding: 0.3rem 0.9rem;
     font-size: 0.7rem;
     font-weight: 700;
@@ -2522,7 +2522,7 @@ input:focus-visible,
 .auto-precio-oferta {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 2rem;
-    color: #e53935;
+    color: #00e5ff;
     line-height: 1;
 }
 
@@ -2538,13 +2538,13 @@ input:focus-visible,
 .modal-precio-oferta {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 3.5rem;
-    color: #e53935;
-    text-shadow: 0 0 30px rgba(229, 57, 53, 0.2);
+    color: #00e5ff;
+    text-shadow: 0 0 30px rgba(0, 229, 255, 0.25);
 }
 
 /* Card con oferta: borde rojo sutil */
 .auto-card.en-oferta {
-    border-color: #e53935;
+    border-color: #00e5ff;
 }
 
 @media (max-width: 1024px) {
