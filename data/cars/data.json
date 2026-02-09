@@ -5,12 +5,12 @@
     "direccion": "Av. Lisandro de la Torre 923 (Liniers)",
     "ciudad": "Buenos Aires, Argentina",
     "email": "ventas@vendemesteauto.com",
-    "horario": "Lun - S\u00e1b: 9:00 - 19:00",
+    "horario": "Lun - Sáb: 9:00 - 19:00",
     "instagram": "https://instagram.com/vendemesteauto",
     "facebook": "https://facebook.com/vendemesteauto",
-    "titulo_linea1": "CONCESIONARIA DE",
-    "titulo_linea2": "AUTOS USADOS",
-    "logo": "res/ico/logo.svg"
+    "titulo_linea1": "NUEVO",
+    "titulo_linea2": "TITULO",
+    "logo": "res/ico/logo.jpg"
   },
   "autos": [
     {
