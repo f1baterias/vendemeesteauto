@@ -66,13 +66,13 @@ COLOR_HEADER_BAR = "#0d0d0d"
 # Opciones para los dropdowns del formulario
 MARCAS = [
     "Toyota", "Volkswagen", "Ford", "Chevrolet", "Fiat", "Peugeot",
-    "Renault", "Honda", "Nissan", "Jeep", "Citroen", "Hyundai",
+    "Renault", "Honda", "Nissan", "Jeep", "Citro\u00ebn", "Hyundai",
     "Kia", "Mercedes-Benz", "BMW", "Audi", "Otra"
 ]
-COMBUSTIBLES = ["Nafta", "Diesel", "GNC", "Hibrido", "Electrico"]
+COMBUSTIBLES = ["Nafta", "Diesel", "GNC", "H\u00edbrido", "El\u00e9ctrico"]
 CARROCERIAS = [
-    "Sedan", "Hatchback", "SUV", "Camioneta", "Coupe",
-    "Familiar", "Descapotable", "Camion", "Coche pequeno", "Otra"
+    "Sed\u00e1n", "Hatchback", "SUV", "Camioneta", "Coup\u00e9",
+    "Familiar", "Descapotable", "Cami\u00f3n", "Coche peque\u00f1o", "Otra"
 ]
 ANIOS = [str(a) for a in range(2026, 1989, -1)]  # 2026 a 1990
 
