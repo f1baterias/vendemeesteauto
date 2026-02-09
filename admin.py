@@ -877,8 +877,8 @@ class AplicacionAdmin:
         chk_oferta = tk.Checkbutton(
             frame_checks, text="  En oferta (muestra precio tachado + precio oferta)",
             variable=self.var_oferta, font=("Segoe UI", 11),
-            bg=COLOR_BG_CARD, fg="#00e5ff", selectcolor=COLOR_BG_INPUT,
-            activebackground=COLOR_BG_CARD, activeforeground="#00e5ff",
+            bg=COLOR_BG_CARD, fg="#b44dff", selectcolor=COLOR_BG_INPUT,
+            activebackground=COLOR_BG_CARD, activeforeground="#b44dff",
             cursor="hand2", command=self._toggle_oferta
         )
         chk_oferta.pack(anchor="w", pady=3)
@@ -892,15 +892,15 @@ class AplicacionAdmin:
         tk.Label(
             self.frame_precio_oferta, text="Precio de Oferta USD *",
             font=("Segoe UI", 11, "bold"),
-            fg="#00e5ff", bg=COLOR_BG_CARD
+            fg="#b44dff", bg=COLOR_BG_CARD
         ).pack(anchor="w", pady=(0, 3))
 
         entry_oferta = tk.Entry(
             self.frame_precio_oferta, textvariable=self.var_precio_oferta,
             font=("Segoe UI", 14, "bold"),
-            bg=COLOR_BG_INPUT, fg="#00e5ff", insertbackground="#00e5ff",
+            bg=COLOR_BG_INPUT, fg="#b44dff", insertbackground="#b44dff",
             relief="flat", bd=0, highlightthickness=2,
-            highlightcolor="#00e5ff", highlightbackground=COLOR_BORDE_INPUT
+            highlightcolor="#b44dff", highlightbackground=COLOR_BORDE_INPUT
         )
         entry_oferta.pack(fill="x", ipady=6)
         self._agregar_placeholder(entry_oferta, self.var_precio_oferta, "Ej: 3800")

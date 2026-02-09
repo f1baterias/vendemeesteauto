@@ -2430,7 +2430,7 @@ input:focus-visible,
 .destacado-card .destacado-precio-oferta {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 2.2rem;
-    color: #00e5ff;
+    color: #b44dff;
     line-height: 1;
 }
 
@@ -2492,7 +2492,7 @@ input:focus-visible,
     position: absolute;
     top: 1rem;
     left: 1rem;
-    background: #00e5ff;
+    background: #b44dff;
     color: #0a0a0a;
     padding: 0.3rem 0.9rem;
     font-size: 0.7rem;
@@ -2522,7 +2522,7 @@ input:focus-visible,
 .auto-precio-oferta {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 2rem;
-    color: #00e5ff;
+    color: #b44dff;
     line-height: 1;
 }
 
@@ -2538,13 +2538,35 @@ input:focus-visible,
 .modal-precio-oferta {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 3.5rem;
-    color: #00e5ff;
-    text-shadow: 0 0 30px rgba(0, 229, 255, 0.25);
+    color: #b44dff;
+    text-shadow: 0 0 30px rgba(180, 77, 255, 0.35);
 }
 
-/* Card con oferta: borde rojo sutil */
+/* Card con oferta: borde púrpura + distinción visual */
 .auto-card.en-oferta {
-    border-color: #00e5ff;
+    border-color: #b44dff;
+    border-width: 2px;
+    background: linear-gradient(165deg, #1a1a1a 0%, #1a1028 100%);
+    box-shadow: 0 4px 20px rgba(180, 77, 255, 0.1);
+}
+
+/* Glow púrpura en hover para cards en oferta */
+.auto-card.en-oferta:hover {
+    transform: translateY(-8px);
+    border-color: #c77dff;
+    box-shadow: 0 20px 50px rgba(180, 77, 255, 0.25), 0 0 30px rgba(180, 77, 255, 0.12);
+}
+
+/* Destacado-card en oferta: glow púrpura */
+.destacado-card.en-oferta {
+    border-color: #b44dff;
+    border-width: 2px;
+    background: linear-gradient(165deg, #1e1e1e 0%, #1e1030 100%);
+    box-shadow: 0 8px 40px rgba(180, 77, 255, 0.12);
+}
+
+.destacado-card.en-oferta:hover {
+    box-shadow: 0 20px 50px rgba(180, 77, 255, 0.25), 0 0 30px rgba(180, 77, 255, 0.12);
 }
 
 @media (max-width: 1024px) {

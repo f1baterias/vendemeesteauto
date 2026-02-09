@@ -229,7 +229,8 @@ function cargarDestacados(config) {
         }
 
         const card = document.createElement('article');
-        card.className = 'destacado-card';
+        const esOferta = auto.oferta && auto.precio_oferta;
+        card.className = 'destacado-card' + (esOferta ? ' en-oferta' : '');
         card.innerHTML = `
             <div class="destacado-img-container">
                 <span class="destacado-badge">${auto.oferta ? 'OFERTA' : '★ DESTACADO'}</span>
