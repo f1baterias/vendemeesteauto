@@ -872,6 +872,45 @@ class AplicacionAdmin:
         chk_destacado.pack(anchor="w", pady=3)
         Tooltip(chk_destacado, "Los vehiculos destacados aparecen primero en la web")
 
+        # ── Oferta ────────────────────────────────────────────────────
+        self.var_oferta = tk.BooleanVar(value=False)
+        chk_oferta = tk.Checkbutton(
+            frame_checks, text="  En oferta (muestra precio tachado + precio oferta)",
+            variable=self.var_oferta, font=("Segoe UI", 11),
+            bg=COLOR_BG_CARD, fg="#e53935", selectcolor=COLOR_BG_INPUT,
+            activebackground=COLOR_BG_CARD, activeforeground="#e53935",
+            cursor="hand2", command=self._toggle_oferta
+        )
+        chk_oferta.pack(anchor="w", pady=3)
+        Tooltip(chk_oferta, "Activa el precio de oferta con precio original tachado")
+
+        # Frame para precio de oferta (se muestra/oculta)
+        self.frame_precio_oferta = tk.Frame(interior_opciones, bg=COLOR_BG_CARD)
+
+        self.var_precio_oferta = tk.StringVar()
+
+        tk.Label(
+            self.frame_precio_oferta, text="Precio de Oferta USD *",
+            font=("Segoe UI", 11, "bold"),
+            fg="#e53935", bg=COLOR_BG_CARD
+        ).pack(anchor="w", pady=(0, 3))
+
+        entry_oferta = tk.Entry(
+            self.frame_precio_oferta, textvariable=self.var_precio_oferta,
+            font=("Segoe UI", 14, "bold"),
+            bg=COLOR_BG_INPUT, fg="#e53935", insertbackground="#e53935",
+            relief="flat", bd=0, highlightthickness=2,
+            highlightcolor="#e53935", highlightbackground=COLOR_BORDE_INPUT
+        )
+        entry_oferta.pack(fill="x", ipady=6)
+        self._agregar_placeholder(entry_oferta, self.var_precio_oferta, "Ej: 3800")
+
+        tk.Label(
+            self.frame_precio_oferta,
+            text="El precio original se mostrara tachado y este sera el precio resaltado.",
+            font=("Segoe UI", 9), fg=COLOR_TEXTO_SECUNDARIO, bg=COLOR_BG_CARD
+        ).pack(anchor="w", pady=(3, 0))
+
         # ══════════════════════════════════════════════════════════════
         #  CARD 4: FOTOS
         # ══════════════════════════════════════════════════════════════
@@ -1204,6 +1243,9 @@ class AplicacionAdmin:
         self.var_precio.set(str(auto.get("precio", "")))
         self.var_permuta.set(auto.get("permuta", True))
         self.var_destacado.set(auto.get("destacado", False))
+        self.var_oferta.set(auto.get("oferta", False))
+        self.var_precio_oferta.set(str(auto.get("precio_oferta", "")) if auto.get("precio_oferta") else "")
+        self._toggle_oferta()
 
         # Cargar fotos existentes
         self.fotos_lista = [
@@ -1259,6 +1301,9 @@ class AplicacionAdmin:
         self.var_precio.set("")
         self.var_permuta.set(True)
         self.var_destacado.set(False)
+        self.var_oferta.set(False)
+        self.var_precio_oferta.set("")
+        self._toggle_oferta()
 
         self.frame_marca_otra.pack_forget()
         self.entry_marca_otra._variable.set("")
@@ -1529,6 +1574,8 @@ class AplicacionAdmin:
             "documentacion": self.var_documentacion.get().strip(),
             "permuta": self.var_permuta.get(),
             "destacado": self.var_destacado.get(),
+            "oferta": self.var_oferta.get(),
+            "precio_oferta": self._obtener_precio_oferta(),
             "imagenes": nombres_imagenes
         }
 
@@ -1630,6 +1677,29 @@ class AplicacionAdmin:
         self.estado(f"Eliminado: {titulo}")
         self.limpiar_formulario()
         self.refrescar_lista()
+
+    # ──────────────────────────────────────────────────────────────────
+    #  OFERTA: TOGGLE Y HELPERS
+    # ──────────────────────────────────────────────────────────────────
+
+    def _toggle_oferta(self):
+        """Muestra u oculta el campo de precio de oferta."""
+        if self.var_oferta.get():
+            self.frame_precio_oferta.pack(fill="x", pady=(4, PAD_FIELD))
+        else:
+            self.frame_precio_oferta.pack_forget()
+
+    def _obtener_precio_oferta(self):
+        """Obtiene el precio de oferta o 0 si no aplica."""
+        if not self.var_oferta.get():
+            return 0
+        texto = self.var_precio_oferta.get().strip()
+        if not texto:
+            return 0
+        try:
+            return int(texto.replace(".", "").replace(",", ""))
+        except ValueError:
+            return 0
 
     # ──────────────────────────────────────────────────────────────────
     #  GIT: PUBLICAR CAMBIOS
@@ -1879,6 +1949,84 @@ class AplicacionAdmin:
         )
         self.lbl_logo_ruta.pack(anchor="w")
 
+        # ── CARD 5: Marcas ───────────────────────────────────────────
+        interior_marcas, _ = self._crear_card_config(form, "Marcas (filtro de la pagina)")
+
+        self.lista_marcas_config = []
+
+        frame_marcas_list = tk.Frame(interior_marcas, bg=COLOR_BG_CARD)
+        frame_marcas_list.pack(fill="x", pady=(0, 8))
+
+        self.listbox_marcas = tk.Listbox(
+            frame_marcas_list, font=("Segoe UI", 10),
+            bg=COLOR_BG_INPUT, fg=COLOR_TEXTO, selectbackground=COLOR_ORO,
+            selectforeground=COLOR_BG, relief="flat", bd=0,
+            highlightthickness=1, highlightcolor=COLOR_ORO,
+            highlightbackground=COLOR_BORDE_INPUT, height=8
+        )
+        self.listbox_marcas.pack(side="left", fill="both", expand=True)
+
+        scrollbar_marcas = ttk.Scrollbar(frame_marcas_list, orient="vertical",
+                                          command=self.listbox_marcas.yview)
+        scrollbar_marcas.pack(side="right", fill="y")
+        self.listbox_marcas.config(yscrollcommand=scrollbar_marcas.set)
+
+        frame_marcas_acciones = tk.Frame(interior_marcas, bg=COLOR_BG_CARD)
+        frame_marcas_acciones.pack(fill="x", pady=(0, PAD_FIELD))
+
+        self.var_nueva_marca = tk.StringVar()
+        entry_nueva_marca = tk.Entry(
+            frame_marcas_acciones, textvariable=self.var_nueva_marca,
+            font=("Segoe UI", 10), bg=COLOR_BG_INPUT, fg=COLOR_TEXTO,
+            insertbackground=COLOR_TEXTO, relief="flat", bd=0,
+            highlightthickness=1, highlightcolor=COLOR_ORO,
+            highlightbackground=COLOR_BORDE_INPUT
+        )
+        entry_nueva_marca.pack(side="left", fill="x", expand=True, ipady=5, padx=(0, 8))
+        self._agregar_placeholder(entry_nueva_marca, self.var_nueva_marca, "Nueva marca...")
+
+        btn_agregar_marca = tk.Button(
+            frame_marcas_acciones, text="+ AGREGAR",
+            font=("Segoe UI", 9, "bold"), fg=COLOR_BG, bg=COLOR_ORO,
+            activebackground=COLOR_ORO_HOVER, activeforeground=COLOR_BG,
+            relief="flat", padx=10, pady=4, cursor="hand2",
+            command=self._agregar_marca
+        )
+        btn_agregar_marca.pack(side="left", padx=(0, 4))
+
+        btn_eliminar_marca = tk.Button(
+            frame_marcas_acciones, text="ELIMINAR",
+            font=("Segoe UI", 9, "bold"), fg="#ffffff", bg=COLOR_ROJO,
+            activebackground="#c82333", activeforeground="#ffffff",
+            relief="flat", padx=10, pady=4, cursor="hand2",
+            command=self._eliminar_marca
+        )
+        btn_eliminar_marca.pack(side="left")
+
+        # ── CARD 6: Destacados ─────────────────────────────────────────
+        interior_dest, _ = self._crear_card_config(form, "Seccion de Destacados")
+
+        self.var_cfg_destacados_activos = tk.BooleanVar(value=False)
+        chk_dest = tk.Checkbutton(
+            interior_dest, text="  Activar seccion de vehiculos destacados en la pagina",
+            variable=self.var_cfg_destacados_activos, font=("Segoe UI", 11),
+            bg=COLOR_BG_CARD, fg=COLOR_ORO, selectcolor=COLOR_BG_INPUT,
+            activebackground=COLOR_BG_CARD, activeforeground=COLOR_ORO,
+            cursor="hand2"
+        )
+        chk_dest.pack(anchor="w", pady=(0, 8))
+
+        tk.Label(
+            interior_dest,
+            text="Seleccione hasta 3 vehiculos para mostrar como destacados (se mostraran en grande):",
+            font=("Segoe UI", 9), fg=COLOR_TEXTO_SECUNDARIO, bg=COLOR_BG_CARD, wraplength=500
+        ).pack(anchor="w", pady=(0, 6))
+
+        self.frame_dest_checks = tk.Frame(interior_dest, bg=COLOR_BG_CARD)
+        self.frame_dest_checks.pack(fill="x", pady=(0, PAD_FIELD))
+
+        self.dest_check_vars = {}  # {auto_id: BooleanVar}
+
         # ── Boton guardar configuracion ────────────────────────────────
         frame_btns_cfg = tk.Frame(form, bg=COLOR_BG)
         frame_btns_cfg.pack(fill="x", padx=24, pady=(4, PAD_SECTION * 2))
@@ -1971,11 +2119,26 @@ class AplicacionAdmin:
         self.var_cfg_titulo2.set(config.get("titulo_linea2", ""))
         self.var_cfg_logo.set(config.get("logo", ""))
 
+        # Marcas
+        self.lista_marcas_config = list(config.get("marcas", MARCAS))
+        self._refrescar_listbox_marcas()
+
+        # Destacados
+        self.var_cfg_destacados_activos.set(config.get("destacados_activos", False))
+        dest_ids = config.get("destacados_ids", [])
+        self._refrescar_dest_checks(dest_ids)
+
         # Actualizar preview del logo
         self._actualizar_logo_preview()
 
     def guardar_config(self):
         """Guarda la configuracion en data.json."""
+        # Obtener IDs de destacados seleccionados (max 3)
+        destacados_ids = [
+            aid for aid, var in self.dest_check_vars.items()
+            if var.get()
+        ][:3]
+
         config = {
             "telefono": self.var_cfg_telefono.get().strip(),
             "whatsapp": self.var_cfg_whatsapp.get().strip(),
@@ -1987,7 +2150,10 @@ class AplicacionAdmin:
             "facebook": self.var_cfg_facebook.get().strip(),
             "titulo_linea1": self.var_cfg_titulo1.get().strip(),
             "titulo_linea2": self.var_cfg_titulo2.get().strip(),
-            "logo": self.var_cfg_logo.get().strip()
+            "logo": self.var_cfg_logo.get().strip(),
+            "marcas": list(self.lista_marcas_config),
+            "destacados_activos": self.var_cfg_destacados_activos.get(),
+            "destacados_ids": destacados_ids
         }
 
         self.datos["config"] = config
@@ -2068,6 +2234,99 @@ class AplicacionAdmin:
         # Para SVG o si no hay Pillow, mostrar solo el nombre
         self.lbl_logo_preview.config(image="", text=os.path.basename(logo_ruta))
         self.logo_thumb = None
+
+    # ──────────────────────────────────────────────────────────────────
+    #  MARCAS: AGREGAR / ELIMINAR
+    # ──────────────────────────────────────────────────────────────────
+
+    def _refrescar_listbox_marcas(self):
+        """Refresca el listbox de marcas con los datos actuales."""
+        self.listbox_marcas.delete(0, tk.END)
+        for marca in sorted(self.lista_marcas_config):
+            self.listbox_marcas.insert(tk.END, marca)
+
+    def _agregar_marca(self):
+        """Agrega una nueva marca a la lista."""
+        nueva = self.var_nueva_marca.get().strip()
+        if not nueva:
+            return
+        if nueva in self.lista_marcas_config:
+            messagebox.showwarning("Marca duplicada", f"La marca '{nueva}' ya existe en la lista.")
+            return
+        self.lista_marcas_config.append(nueva)
+        self._refrescar_listbox_marcas()
+        self.var_nueva_marca.set("")
+        self.estado(f"Marca agregada: {nueva}")
+
+    def _eliminar_marca(self):
+        """Elimina la marca seleccionada de la lista."""
+        seleccion = self.listbox_marcas.curselection()
+        if not seleccion:
+            messagebox.showwarning("Sin seleccion", "Seleccione una marca de la lista para eliminar.")
+            return
+        marca = self.listbox_marcas.get(seleccion[0])
+        self.lista_marcas_config.remove(marca)
+        self._refrescar_listbox_marcas()
+        self.estado(f"Marca eliminada: {marca}")
+
+    # ──────────────────────────────────────────────────────────────────
+    #  DESTACADOS: SELECTOR DE VEHICULOS
+    # ──────────────────────────────────────────────────────────────────
+
+    def _refrescar_dest_checks(self, ids_seleccionados=None):
+        """Refresca los checkboxes de vehiculos destacados."""
+        if ids_seleccionados is None:
+            ids_seleccionados = []
+
+        # Limpiar frame
+        for widget in self.frame_dest_checks.winfo_children():
+            widget.destroy()
+
+        self.dest_check_vars = {}
+        autos = self.datos.get("autos", [])
+
+        if not autos:
+            tk.Label(
+                self.frame_dest_checks,
+                text="No hay vehiculos cargados.",
+                font=("Segoe UI", 10), fg=COLOR_TEXTO_SECUNDARIO,
+                bg=COLOR_BG_CARD
+            ).pack(anchor="w")
+            return
+
+        for auto in autos:
+            aid = auto.get("id", "")
+            titulo = auto.get("titulo", aid)
+            precio = auto.get("precio", 0)
+
+            var = tk.BooleanVar(value=(aid in ids_seleccionados))
+            self.dest_check_vars[aid] = var
+
+            chk = tk.Checkbutton(
+                self.frame_dest_checks,
+                text=f"  {titulo}  -  U$S {precio:,}".replace(",", "."),
+                variable=var, font=("Segoe UI", 10),
+                bg=COLOR_BG_CARD, fg=COLOR_TEXTO, selectcolor=COLOR_BG_INPUT,
+                activebackground=COLOR_BG_CARD, activeforeground=COLOR_ORO,
+                cursor="hand2", command=self._verificar_max_destacados
+            )
+            chk.pack(anchor="w", pady=2)
+
+    def _verificar_max_destacados(self):
+        """Verifica que no se seleccionen mas de 3 destacados."""
+        seleccionados = sum(1 for var in self.dest_check_vars.values() if var.get())
+        if seleccionados > 3:
+            messagebox.showwarning(
+                "Maximo 3 destacados",
+                "Solo puede seleccionar hasta 3 vehiculos destacados.\n\n"
+                "Desmarque uno antes de seleccionar otro."
+            )
+            # Desmarcar el ultimo que se selecciono (el que activo este callback)
+            # Encontrar los seleccionados y desmarcar el ultimo
+            for aid, var in reversed(list(self.dest_check_vars.items())):
+                if var.get():
+                    var.set(False)
+                    break
 
     # ──────────────────────────────────────────────────────────────────
     #  BARRA DE ESTADO

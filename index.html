@@ -103,8 +103,8 @@
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1 class="hero-title">
-                <span class="hero-title-line">CONCESIONARIA DE</span>
-                <span class="hero-title-accent">AUTOS USADOS</span>
+                <span class="hero-title-line" id="hero-titulo-1"></span>
+                <span class="hero-title-accent" id="hero-titulo-2"></span>
             </h1>
             <p class="hero-subtitle">Vehículos seleccionados con la mejor relación precio-calidad del mercado</p>
             <a href="#catalogo" class="btn-hero">Ver Catálogo</a>
@@ -125,6 +125,18 @@
         </div>
         <div class="hero-scroll-hint" aria-hidden="true">
             <span class="scroll-arrow"></span>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- SECCIÓN DESTACADOS -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <section class="destacados-section" id="seccion-destacados" style="display:none" aria-label="Vehículos destacados">
+        <div class="destacados-container">
+            <h2 class="destacados-titulo">&#9733; Vehículos Destacados</h2>
+            <div class="destacados-grid" id="destacados-grid">
+                <!-- Se llena desde JS -->
+            </div>
         </div>
     </section>
 
@@ -204,13 +216,14 @@
                     </select>
                 </div>
 
-                <!-- Filtro de año -->
+                <!-- Filtro de año (rango) -->
                 <div class="filtro-grupo">
-                    <label class="filtro-label" for="filtro-año">Año</label>
-                    <select id="filtro-año" class="filtro-select">
-                        <option value="">Todos los años</option>
-                        <!-- Se llenan desde JS -->
-                    </select>
+                    <label class="filtro-label">Año</label>
+                    <div class="filtro-rango-año">
+                        <input type="number" id="filtro-año-min" class="filtro-input-año" placeholder="Desde" min="1990" max="2026">
+                        <span class="filtro-rango-sep">&mdash;</span>
+                        <input type="number" id="filtro-año-max" class="filtro-input-año" placeholder="Hasta" min="1990" max="2026">
+                    </div>
                 </div>
 
                 <!-- Filtro de carrocería -->

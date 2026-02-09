@@ -10,7 +10,10 @@
     "facebook": "https://facebook.com/vendemesteauto",
     "titulo_linea1": "NUEVO",
     "titulo_linea2": "TITULO",
-    "logo": "res/ico/logo.jpg"
+    "logo": "res/ico/logo.jpg",
+    "marcas": ["Toyota","Volkswagen","Ford","Chevrolet","Fiat","Peugeot","Renault","Honda","Nissan","Jeep","Citro\u00ebn","Hyundai","Kia","Mercedes-Benz","BMW","Audi"],
+    "destacados_activos": true,
+    "destacados_ids": ["ecosport_2010","ford_f100_1992"]
   },
   "autos": [
     {
@@ -28,6 +31,8 @@
       "documentacion": "08 al día",
       "permuta": true,
       "destacado": true,
+      "oferta": false,
+      "precio_oferta": 0,
       "imagenes": [
         "bc8d3bc7-b93b-4e42-8d54-e63155166e99.jpg",
         "186a8b0b-ba6e-453f-b98a-e093aa1ea4e4.jpg",
@@ -56,6 +61,8 @@
       "documentacion": "08 al día",
       "permuta": true,
       "destacado": true,
+      "oferta": false,
+      "precio_oferta": 0,
       "imagenes": [
         "560431513_18083190797308737_452150464910248788_n.jpg",
         "560339468_18083190809308737_4815929280068692400_n.jpg",
@@ -82,6 +89,8 @@
       "documentacion": "08 al día",
       "permuta": true,
       "destacado": false,
+      "oferta": false,
+      "precio_oferta": 0,
       "imagenes": [
         "bf23b866-2658-45fa-9c2c-a6d5f984cc4d.jpg",
         "62a37319-702d-4e7e-9686-2f3e1a9505be.jpg",
@@ -107,6 +116,8 @@
       "documentacion": "08 al día",
       "permuta": true,
       "destacado": false,
+      "oferta": false,
+      "precio_oferta": 0,
       "imagenes": [
         "833cf3a2-0499-4083-ac61-a7d99b1a81c8.jpg",
         "e0236d2f-4361-4ef6-b98f-cdf582210e7a.jpg",
@@ -135,6 +146,8 @@
       "documentacion": "08 al día",
       "permuta": true,
       "destacado": false,
+      "oferta": false,
+      "precio_oferta": 0,
       "imagenes": [
         "16278942-434f-471b-953a-a746a5cd8fe0.jpg",
         "59ea0b3e-7317-48cd-93c2-e0326de67a28.jpg",

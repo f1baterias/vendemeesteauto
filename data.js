@@ -91,12 +91,4 @@ const RANGOS_PRECIO = [
 ];
 
 
-// ============================================================================
-// AÑOS PARA FILTROS
-// ============================================================================
-
-// Se genera dinámicamente desde el año actual hasta 1990
-const AÑOS_DISPONIBLES = Array.from(
-    { length: new Date().getFullYear() - 1989 },
-    (_, i) => new Date().getFullYear() + 1 - i
-);
+// MARCAS_DISPONIBLES ahora se sobreescribe desde data.json config.marcas

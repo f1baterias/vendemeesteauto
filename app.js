@@ -163,8 +163,8 @@ function aplicarConfig(config) {
     cargarInformacionContacto();
 
     // Titulo del hero
-    const heroLine1 = document.querySelector('.hero-title-line');
-    const heroLine2 = document.querySelector('.hero-title-accent');
+    const heroLine1 = document.getElementById('hero-titulo-1');
+    const heroLine2 = document.getElementById('hero-titulo-2');
     if (heroLine1 && config.titulo_linea1) heroLine1.textContent = config.titulo_linea1;
     if (heroLine2 && config.titulo_linea2) heroLine2.textContent = config.titulo_linea2;
 
@@ -172,56 +172,147 @@ function aplicarConfig(config) {
     if (config.logo) {
         const logos = document.querySelectorAll('.logo-icon img');
         logos.forEach(img => { img.src = config.logo; });
-        // Actualizar favicon
         const favicon = document.querySelector('link[rel="icon"]');
         if (favicon) favicon.href = config.logo;
     }
+
+    // Marcas dinámicas desde config
+    if (config.marcas && Array.isArray(config.marcas)) {
+        cargarFiltros(config.marcas);
+    }
+
+    // Sección destacados
+    cargarDestacados(config);
+}
+
+// ============================================================================
+// SECCIÓN DESTACADOS
+// ============================================================================
+
+function cargarDestacados(config) {
+    const seccion = document.getElementById('seccion-destacados');
+    const grid = document.getElementById('destacados-grid');
+    if (!seccion || !grid) return;
+
+    if (!config.destacados_activos || !config.destacados_ids || config.destacados_ids.length === 0) {
+        seccion.style.display = 'none';
+        return;
+    }
+
+    // Filtrar autos destacados (máx 3)
+    const destacados = config.destacados_ids
+        .slice(0, 3)
+        .map(id => LISTA_AUTOS.find(a => a.id === id))
+        .filter(Boolean);
+
+    if (destacados.length === 0) {
+        seccion.style.display = 'none';
+        return;
+    }
+
+    grid.innerHTML = '';
+    destacados.forEach(auto => {
+        const img = obtenerRutaImagen(auto, 0);
+        const mensajeWA = encodeURIComponent(
+            `Hola! Me interesa el ${auto.titulo} (${auto.año}) publicado a ${formatearPrecio(auto.precio)}. ¿Está disponible?`
+        );
+
+        // Precio: si tiene oferta, mostrar tachado + oferta
+        let precioHTML;
+        if (auto.oferta && auto.precio_oferta) {
+            precioHTML = `
+                <span class="destacado-precio-original">${formatearPrecio(auto.precio)}</span>
+                <span class="destacado-precio-oferta">${formatearPrecio(auto.precio_oferta)}</span>
+            `;
+        } else {
+            precioHTML = `<span class="destacado-precio">${formatearPrecio(auto.precio)}</span>`;
+        }
+
+        const card = document.createElement('article');
+        card.className = 'destacado-card';
+        card.innerHTML = `
+            <div class="destacado-img-container">
+                <span class="destacado-badge">${auto.oferta ? 'OFERTA' : '★ DESTACADO'}</span>
+                <img src="${img || ''}" alt="${auto.titulo}" class="destacado-img" loading="lazy"
+                     onerror="this.src=''; this.alt='Sin imagen'">
+            </div>
+            <div class="destacado-info">
+                <span class="destacado-marca">${auto.marca}</span>
+                <h3 class="destacado-titulo">${auto.titulo}</h3>
+                <div class="destacado-specs">
+                    <span>${auto.año}</span>
+                    <span>${auto.combustible}</span>
+                    <span>${auto.kilometraje || ''}</span>
+                </div>
+                ${precioHTML}
+                <div class="destacado-acciones">
+                    <a href="https://wa.me/${INFORMACION_CONTACTO.whatsapp}?text=${mensajeWA}"
+                       class="btn-destacado-wa" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+                        <img src="res/ico/whatsapp.svg" alt="" style="width:16px;height:16px"> Consultar
+                    </a>
+                    <button class="btn-destacado-ver" onclick="event.stopPropagation()">Ver detalles</button>
+                </div>
+            </div>
+        `;
+
+        card.addEventListener('click', () => abrirModal(auto));
+        const btnVer = card.querySelector('.btn-destacado-ver');
+        if (btnVer) btnVer.addEventListener('click', (e) => { e.stopPropagation(); abrirModal(auto); });
+
+        grid.appendChild(card);
+    });
+
+    seccion.style.display = 'block';
 }
 
 // ============================================================================
 // CARGAR FILTROS
 // ============================================================================
 
-function cargarFiltros() {
+function cargarFiltros(marcasOverride) {
     const filtroPrecio = document.getElementById('filtro-precio');
-    RANGOS_PRECIO.forEach((rango, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = rango.etiqueta;
-        filtroPrecio.appendChild(option);
-    });
+    if (filtroPrecio.options.length <= 1) {
+        RANGOS_PRECIO.forEach((rango, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = rango.etiqueta;
+            filtroPrecio.appendChild(option);
+        });
+    }
 
+    // Marcas: usar override de config o fallback a MARCAS_DISPONIBLES
     const filtroMarca = document.getElementById('filtro-marca');
-    MARCAS_DISPONIBLES.forEach(marca => {
+    const marcas = marcasOverride || MARCAS_DISPONIBLES;
+    // Limpiar opciones existentes (excepto la primera "Todas")
+    while (filtroMarca.options.length > 1) filtroMarca.remove(1);
+    marcas.forEach(marca => {
         const option = document.createElement('option');
         option.value = marca;
         option.textContent = marca;
         filtroMarca.appendChild(option);
     });
 
-    const filtroAño = document.getElementById('filtro-año');
-    AÑOS_DISPONIBLES.forEach(año => {
-        const option = document.createElement('option');
-        option.value = año;
-        option.textContent = año;
-        filtroAño.appendChild(option);
-    });
+    // Año: ahora es rango manual, no se cargan opciones
 
     const filtroCarroceria = document.getElementById('filtro-carroceria');
-    CARROCERIAS_DISPONIBLES.forEach(carroceria => {
-        const option = document.createElement('option');
-        option.value = carroceria;
-        option.textContent = carroceria;
-        filtroCarroceria.appendChild(option);
-    });
+    if (filtroCarroceria.options.length <= 1) {
+        CARROCERIAS_DISPONIBLES.forEach(carroceria => {
+            const option = document.createElement('option');
+            option.value = carroceria;
+            option.textContent = carroceria;
+            filtroCarroceria.appendChild(option);
+        });
+    }
 
     const filtroCombustible = document.getElementById('filtro-combustible');
-    COMBUSTIBLES_DISPONIBLES.forEach(combustible => {
-        const option = document.createElement('option');
-        option.value = combustible;
-        option.textContent = combustible;
-        filtroCombustible.appendChild(option);
-    });
+    if (filtroCombustible.options.length <= 1) {
+        COMBUSTIBLES_DISPONIBLES.forEach(combustible => {
+            const option = document.createElement('option');
+            option.value = combustible;
+            option.textContent = combustible;
+            filtroCombustible.appendChild(option);
+        });
+    }
 }
 
 // ============================================================================
@@ -239,7 +330,8 @@ function filtrarAutos() {
     const precioMin = document.getElementById('precio-min').value;
     const precioMax = document.getElementById('precio-max').value;
     const marca = document.getElementById('filtro-marca').value;
-    const año = document.getElementById('filtro-año').value;
+    const añoMin = document.getElementById('filtro-año-min').value;
+    const añoMax = document.getElementById('filtro-año-max').value;
     const carroceria = document.getElementById('filtro-carroceria').value;
     const combustible = document.getElementById('filtro-combustible').value;
 
@@ -259,7 +351,11 @@ function filtrarAutos() {
         }
 
         if (marca && auto.marca !== marca) return false;
-        if (año && auto.año !== parseInt(año)) return false;
+
+        // Filtro de año por rango
+        if (añoMin && auto.año < parseInt(añoMin)) return false;
+        if (añoMax && auto.año > parseInt(añoMax)) return false;
+
         if (carroceria && auto.carroceria !== carroceria) return false;
         if (combustible && auto.combustible !== combustible) return false;
 
@@ -308,7 +404,8 @@ function mostrarAutos(autos) {
 
 function crearCardAuto(auto, index) {
     const card = document.createElement('article');
-    card.className = 'auto-card' + (auto.destacado ? ' destacado' : '');
+    const esOferta = auto.oferta && auto.precio_oferta;
+    card.className = 'auto-card' + (auto.destacado ? ' destacado' : '') + (esOferta ? ' en-oferta' : '');
     card.style.animationDelay = `${index * 0.1}s`;
 
     const primeraImagen = obtenerRutaImagen(auto, 0);
@@ -321,24 +418,47 @@ function crearCardAuto(auto, index) {
         ? `<span class="fotos-cantidad"><img src="res/ico/camera.svg" alt="" style="width:12px;height:12px;display:inline;vertical-align:middle;margin-right:3px">${cantidadFotos}</span>`
         : '';
 
-    // Precio principal y secundario según modo
+    // Badge oferta
+    const ofertaBadge = esOferta ? '<span class="oferta-badge">OFERTA</span>' : '';
+
+    // Precio: oferta o normal, con soporte pesos
     let precioPrincipalHTML, precioSecundarioHTML;
-    if (mostrarEnPesos && cotizacionDolar > 0) {
-        precioPrincipalHTML = `<span class="auto-precio">$ ${(auto.precio * cotizacionDolar).toLocaleString('es-AR')}</span>`;
-        precioSecundarioHTML = `<span class="auto-precio-secundario">${formatearPrecio(auto.precio)}</span>`;
+    const precioMostrar = esOferta ? auto.precio_oferta : auto.precio;
+
+    if (esOferta) {
+        if (mostrarEnPesos && cotizacionDolar > 0) {
+            precioPrincipalHTML = `
+                <span class="auto-precio-original">$ ${(auto.precio * cotizacionDolar).toLocaleString('es-AR')}</span>
+                <span class="auto-precio-oferta">$ ${(auto.precio_oferta * cotizacionDolar).toLocaleString('es-AR')}</span>
+            `;
+            precioSecundarioHTML = `<span class="auto-precio-secundario">${formatearPrecio(auto.precio_oferta)}</span>`;
+        } else {
+            precioPrincipalHTML = `
+                <span class="auto-precio-original">${formatearPrecio(auto.precio)}</span>
+                <span class="auto-precio-oferta">${formatearPrecio(auto.precio_oferta)}</span>
+            `;
+            precioSecundarioHTML = '';
+        }
     } else {
-        precioPrincipalHTML = `<span class="auto-precio">${formatearPrecio(auto.precio)}</span>`;
-        precioSecundarioHTML = '';
+        if (mostrarEnPesos && cotizacionDolar > 0) {
+            precioPrincipalHTML = `<span class="auto-precio">$ ${(auto.precio * cotizacionDolar).toLocaleString('es-AR')}</span>`;
+            precioSecundarioHTML = `<span class="auto-precio-secundario">${formatearPrecio(auto.precio)}</span>`;
+        } else {
+            precioPrincipalHTML = `<span class="auto-precio">${formatearPrecio(auto.precio)}</span>`;
+            precioSecundarioHTML = '';
+        }
     }
 
+    const precioWA = esOferta ? auto.precio_oferta : auto.precio;
     const mensajeWA = encodeURIComponent(
-        `Hola! Me interesa el ${auto.titulo} (${auto.año}) publicado a ${formatearPrecio(auto.precio)}. ¿Está disponible?`
+        `Hola! Me interesa el ${auto.titulo} (${auto.año}) publicado a ${formatearPrecio(precioWA)}. ¿Está disponible?`
     );
 
     card.innerHTML = `
         <div class="auto-imagen-container">
             ${imagenHTML}
             ${indicadorFotos}
+            ${ofertaBadge}
         </div>
         <div class="auto-info">
             <span class="auto-marca">${auto.marca}</span>
@@ -434,18 +554,36 @@ function abrirModal(auto) {
         `;
     }
 
+    const esOferta = auto.oferta && auto.precio_oferta;
+    const precioWA = esOferta ? auto.precio_oferta : auto.precio;
     const mensajeWhatsApp = encodeURIComponent(
-        `Hola! Me interesa el ${auto.titulo} (${auto.año}) publicado a ${formatearPrecio(auto.precio)}. ¿Está disponible?`
+        `Hola! Me interesa el ${auto.titulo} (${auto.año}) publicado a ${formatearPrecio(precioWA)}. ¿Está disponible?`
     );
 
     // Precio principal y secundario en modal
     let modalPrecioPrincipal, modalPrecioSecundario;
-    if (mostrarEnPesos && cotizacionDolar > 0) {
-        modalPrecioPrincipal = `<span class="modal-precio">$ ${(auto.precio * cotizacionDolar).toLocaleString('es-AR')}</span>`;
-        modalPrecioSecundario = `<span class="modal-precio-secundario">${formatearPrecio(auto.precio)}</span>`;
+    if (esOferta) {
+        if (mostrarEnPesos && cotizacionDolar > 0) {
+            modalPrecioPrincipal = `
+                <span class="modal-precio-original">$ ${(auto.precio * cotizacionDolar).toLocaleString('es-AR')}</span>
+                <span class="modal-precio-oferta">$ ${(auto.precio_oferta * cotizacionDolar).toLocaleString('es-AR')}</span>
+            `;
+            modalPrecioSecundario = `<span class="modal-precio-secundario">${formatearPrecio(auto.precio_oferta)}</span>`;
+        } else {
+            modalPrecioPrincipal = `
+                <span class="modal-precio-original">${formatearPrecio(auto.precio)}</span>
+                <span class="modal-precio-oferta">${formatearPrecio(auto.precio_oferta)}</span>
+            `;
+            modalPrecioSecundario = '';
+        }
     } else {
-        modalPrecioPrincipal = `<span class="modal-precio">${formatearPrecio(auto.precio)}</span>`;
-        modalPrecioSecundario = '';
+        if (mostrarEnPesos && cotizacionDolar > 0) {
+            modalPrecioPrincipal = `<span class="modal-precio">$ ${(auto.precio * cotizacionDolar).toLocaleString('es-AR')}</span>`;
+            modalPrecioSecundario = `<span class="modal-precio-secundario">${formatearPrecio(auto.precio)}</span>`;
+        } else {
+            modalPrecioPrincipal = `<span class="modal-precio">${formatearPrecio(auto.precio)}</span>`;
+            modalPrecioSecundario = '';
+        }
     }
 
     body.innerHTML = `
@@ -952,7 +1090,8 @@ function inicializarEventos() {
         cargarAutos();
     });
     document.getElementById('filtro-marca').addEventListener('change', cargarAutos);
-    document.getElementById('filtro-año').addEventListener('change', cargarAutos);
+    document.getElementById('filtro-año-min').addEventListener('input', cargarAutos);
+    document.getElementById('filtro-año-max').addEventListener('input', cargarAutos);
     document.getElementById('filtro-carroceria').addEventListener('change', cargarAutos);
     document.getElementById('filtro-combustible').addEventListener('change', cargarAutos);
 
@@ -1061,7 +1200,8 @@ function limpiarFiltros() {
     document.getElementById('precio-min').value = '';
     document.getElementById('precio-max').value = '';
     document.getElementById('filtro-marca').value = '';
-    document.getElementById('filtro-año').value = '';
+    document.getElementById('filtro-año-min').value = '';
+    document.getElementById('filtro-año-max').value = '';
     document.getElementById('filtro-carroceria').value = '';
     document.getElementById('filtro-combustible').value = '';
 
@@ -1085,8 +1225,12 @@ function actualizarFiltrosActivos() {
     const marca = document.getElementById('filtro-marca').value;
     if (marca) filtros.push({ label: marca, clear: () => { document.getElementById('filtro-marca').value = ''; } });
 
-    const año = document.getElementById('filtro-año').value;
-    if (año) filtros.push({ label: año, clear: () => { document.getElementById('filtro-año').value = ''; } });
+    const añoMin = document.getElementById('filtro-año-min').value;
+    const añoMax = document.getElementById('filtro-año-max').value;
+    if (añoMin || añoMax) {
+        const label = `Año: ${añoMin || '...'} - ${añoMax || '...'}`;
+        filtros.push({ label, clear: () => { document.getElementById('filtro-año-min').value = ''; document.getElementById('filtro-año-max').value = ''; } });
+    }
 
     const carroceria = document.getElementById('filtro-carroceria').value;
     if (carroceria) filtros.push({ label: carroceria, clear: () => { document.getElementById('filtro-carroceria').value = ''; } });
